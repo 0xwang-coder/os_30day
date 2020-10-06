@@ -29,7 +29,7 @@ void HariMain(void)
 {
 	char *p;
 	// 设置调色板
-	// init_palette();
+	init_palette();
 
 	p = (char *) 0xa0000; 
 	boxfill8(p, 320, COL8_FF0000,  20,  20, 120, 120);

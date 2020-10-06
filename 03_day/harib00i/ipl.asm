@@ -3,103 +3,103 @@
 
 CYLS	EQU		10				;
 
-		;ORG		0x7c00			;
+	ORG		0x7c00			;
 
 ;
 
-		JMP		entry
-		DB		0x90
-		DB		"HARIBOTE"		; ƒu[ƒgƒZƒNƒ^‚Ì–¼‘O‚ðŽ©—R‚É‘‚¢‚Ä‚æ‚¢i8ƒoƒCƒgj
-		DW		512				; 1ƒZƒNƒ^‚Ì‘å‚«‚³i512‚É‚µ‚È‚¯‚ê‚Î‚¢‚¯‚È‚¢j
-		DB		1				; ƒNƒ‰ƒXƒ^‚Ì‘å‚«‚³i1ƒZƒNƒ^‚É‚µ‚È‚¯‚ê‚Î‚¢‚¯‚È‚¢j
-		DW		1				; FAT‚ª‚Ç‚±‚©‚çŽn‚Ü‚é‚©i•’Ê‚Í1ƒZƒNƒ^–Ú‚©‚ç‚É‚·‚éj
-		DB		2				; FAT‚ÌŒÂ”i2‚É‚µ‚È‚¯‚ê‚Î‚¢‚¯‚È‚¢j
-		DW		224				;
-		DW		2880			;
-		DB		0xf0			;
-		DW		9				;
-		DW		18				;
-		DW		2				;
-		DD		0				;
-		DD		2880			;
-		DB		0,0,0x29		;
-		DD		0xffffffff		;
-		DB		"HARIBOTEOS "	;
-		DB		"FAT12   "		;
-		TIMES  18  DB 0				;
+	JMP		entry
+	DB		0x90
+	DB		"HARIBOTE"		; 
+	DW		512				; 
+	DB		1				; 
+	DW		1				; 
+	DB		2				; 
+	DW		224				;
+	DW		2880			;
+	DB		0xf0			;
+	DW		9				;
+	DW		18				;
+	DW		2				;
+	DD		0				;
+	DD		2880			;
+	DB		0,0,0x29		;
+	DD		0xffffffff		;
+	DB		"HARIBOTEOS "	;
+	DB		"FAT12   "		;
+	TIMES  18  DB 0			;
 
-; ƒvƒƒOƒ‰ƒ€–{‘Ì
+; æ ¸å¿ƒ
 
 entry:
-		MOV		AX,0			; ƒŒƒWƒXƒ^‰Šú‰»
-		MOV		SS,AX
-		MOV		SP,0x7c00
-		MOV		DS,AX
+	MOV		AX,0			; 
+	MOV		SS,AX
+	MOV		SP,0x7c00
+	MOV		DS,AX
 
-; ƒfƒBƒXƒN‚ð“Ç‚Þ
+; è¯»ç›˜
 
-		MOV		AX,0x0820
-		MOV		ES,AX
-		MOV		CH,0			; ƒVƒŠƒ“ƒ_0
-		MOV		DH,0			; ƒwƒbƒh0
-		MOV		CL,2			; ƒZƒNƒ^2
+	MOV		AX,0x0820
+	MOV		ES,AX
+	MOV		CH,0			; 
+	MOV		DH,0			; 
+	MOV		CL,2			; 
 readloop:
-		MOV		SI,0			; Ž¸”s‰ñ”‚ð”‚¦‚éƒŒƒWƒXƒ^
+	MOV		SI,0			; 
 retry:
-		MOV		AH,0x02			; AH=0x02 : ƒfƒBƒXƒN“Ç‚Ýž‚Ý
-		MOV		AL,1			; 1ƒZƒNƒ^
-		MOV		BX,0
-		MOV		DL,0x00			; Aƒhƒ‰ƒCƒu
-		INT		0x13			; ƒfƒBƒXƒNBIOSŒÄ‚Ño‚µ
-		JNC		next			; ƒGƒ‰[‚ª‚¨‚«‚È‚¯‚ê‚Înext‚Ö
-		ADD		SI,1			; SI‚É1‚ð‘«‚·
-		CMP		SI,5			; SI‚Æ5‚ð”äŠr
-		JAE		error			; SI >= 5 ‚¾‚Á‚½‚çerror‚Ö
-		MOV		AH,0x00
-		MOV		DL,0x00			; Aƒhƒ‰ƒCƒu
-		INT		0x13			; ƒhƒ‰ƒCƒu‚ÌƒŠƒZƒbƒg
-		JMP		retry
+	MOV		AH,0x02			; 
+	MOV		AL,1			; 
+	MOV		BX,0
+	MOV		DL,0x00			; 
+	INT		0x13			; 
+	JNC		next			; 
+	ADD		SI,1			; 
+	CMP		SI,5			; 
+	JAE		error			; 
+	MOV		AH,0x00
+	MOV		DL,0x00			; 
+	INT		0x13			; 
+	JMP		retry
 next:
-		MOV		AX,ES			; ƒAƒhƒŒƒX‚ð0x200i‚ß‚é
-		ADD		AX,0x0020
-		MOV		ES,AX			; ADD ES,0x020 ‚Æ‚¢‚¤–½—ß‚ª‚È‚¢‚Ì‚Å‚±‚¤‚µ‚Ä‚¢‚é
-		ADD		CL,1			; CL‚É1‚ð‘«‚·
-		CMP		CL,18			; CL‚Æ18‚ð”äŠr
-		JBE		readloop		; CL <= 18 ‚¾‚Á‚½‚çreadloop‚Ö
-		MOV		CL,1
-		ADD		DH,1
-		CMP		DH,2
-		JB		readloop		; DH < 2 ‚¾‚Á‚½‚çreadloop‚Ö
-		MOV		DH,0
-		ADD		CH,1
-		CMP		CH,CYLS
-		JB		readloop		; CH < CYLS ‚¾‚Á‚½‚çreadloop‚Ö
+	MOV		AX,ES			; 
+	ADD		AX,0x0020
+	MOV		ES,AX			; 
+	ADD		CL,1			; 
+	CMP		CL,18			; 
+	JBE		readloop		; 
+	MOV		CL,1
+	ADD		DH,1
+	CMP		DH,2
+	JB		readloop		; DH < 2 
+	MOV		DH,0
+	ADD		CH,1
+	CMP		CH,CYLS
+	JB		readloop		; CH < CYLS 
 
-; “Ç‚ÝI‚í‚Á‚½‚Ì‚Åharibote.sys‚ðŽÀs‚¾I
+; haribote.sys
 
-		MOV		[0x0ff0],CH		;
-		JMP		0xc200
+	MOV		[0x0ff0],CH		;
+	JMP		0xc200
 
 error:
-		MOV		SI,msg
+	MOV		SI,msg
 putloop:
-		MOV		AL,[SI]
-		ADD		SI,1			; SI‚É1‚ð‘«‚·
-		CMP		AL,0
-		JE		fin
-		MOV		AH,0x0e			;
-		MOV		BX,15			;
-		INT		0x10			;
-		JMP		putloop
+	MOV		AL,[SI]
+	ADD		SI,1			; 
+	CMP		AL,0
+	JE		fin
+	MOV		AH,0x0e			;
+	MOV		BX,15			;
+	INT		0x10			;
+	JMP		putloop
 fin:
-		HLT						;
-		JMP		fin				; –³ŒÀƒ‹[ƒv
+	HLT						;
+	JMP		fin				; 
 msg:
-		DB		0x0a, 0x0a		; ‰üs‚ð2‚Â
-		DB		"load error"
-		DB		0x0a			; ‰üs
-		DB		0
+	DB		0x0a, 0x0a		; 
+	DB		"load error"
+	DB		0x0a			; 
+	DB		0
 
-		TIMES	0x1fe-($-$$) DB  0		;
+	TIMES	0x1fe-($-$$) DB  0		;
 
-		DB		0x55, 0xaa
+	DB		0x55, 0xaa

@@ -7,7 +7,7 @@ asmhead.bin: asmhead.asm Makefile
 naskfunc.o: naskfunc.asm Makefile
 	nasm -g -f elf naskfunc.asm -o naskfunc.o
 bootpack.hrb: bootpack.c har.ld naskfunc.o Makefile 
-	gcc -m32 -nostdlib -T har.ld -g -fno-pic naskfunc.o bootpack.c -o bootpack.hrb
+	gcc -march=i486 -m32 -nostdlib -T har.ld -g -fno-pic naskfunc.o bootpack.c -o bootpack.hrb
 haribote.sys: asmhead.bin bootpack.hrb Makefile
 	cat asmhead.bin bootpack.hrb > haribote.sys
 haribote.img: ipl.bin haribote.sys Makefile

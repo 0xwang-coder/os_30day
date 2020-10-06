@@ -1,11 +1,8 @@
 /* https://vanya.jp.net/os/haribote.html#hrb */
 OUTPUT_FORMAT("binary");
-/*OUTPUT_ARCH(i386)*/
 
 SECTIONS
 {
-    /*. = 0x7c00;*/
-
     .head 0x0 : {
         LONG(64 * 1024)  /*  0 : stack+.data+heap の大きさ（4KBの倍数） */
         LONG(0x69726148)      /*  4 : シグネチャ "Hari" */

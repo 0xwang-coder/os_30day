@@ -4,7 +4,7 @@ OUTPUT_FORMAT("binary");
 
 SECTIONS
 {
-    /*. = 0x7c00;*/
+    . = 0x7c00;
 
     .head 0x0 : {
         LONG(64 * 1024)  

@@ -1,143 +1,136 @@
 ; haribote-os boot asm
 ; TAB=4
 
-BOTPAK	EQU		0x00280000		; bootpack‚Ìƒ[ƒhæ
-DSKCAC	EQU		0x00100000		; ƒfƒBƒXƒNƒLƒƒƒbƒVƒ…‚ÌêŠ
-DSKCAC0	EQU		0x00008000		; ƒfƒBƒXƒNƒLƒƒƒbƒVƒ…‚ÌêŠiƒŠƒAƒ‹ƒ‚[ƒhj
+BOTPAK	EQU		0x00280000		; bootpack
+DSKCAC	EQU		0x00100000		; 
+DSKCAC0	EQU		0x00008000		; 
 
-; BOOT_INFOŠÖŒW
-CYLS	EQU		0x0ff0			; ƒu[ƒgƒZƒNƒ^‚ªÝ’è‚·‚é
+; æœ‰å…³BOOT_INFOå˜é‡çš„å£°æ˜Ž
+CYLS	EQU		0x0ff0			; 
 LEDS	EQU		0x0ff1
-VMODE	EQU		0x0ff2			; F”‚ÉŠÖ‚·‚éî•ñB‰½ƒrƒbƒgƒJƒ‰[‚©H
-SCRNX	EQU		0x0ff4			; ‰ð‘œ“x‚ÌX
-SCRNY	EQU		0x0ff6			; ‰ð‘œ“x‚ÌY
-VRAM	EQU		0x0ff8			; ƒOƒ‰ƒtƒBƒbƒNƒoƒbƒtƒ@‚ÌŠJŽn”Ô’n
+VMODE	EQU		0x0ff2			; 
+SCRNX	EQU		0x0ff4			; 
+SCRNY	EQU		0x0ff6			; 
+VRAM	EQU		0x0ff8			; 
 
-		;ORG		0xc200			;
+	ORG		0xc200				; asmhead.asmè¢«åŠ è½½åˆ°å†…å­˜çš„åœ°å€
 
-; ‰æ–Êƒ‚[ƒh‚ðÝ’è
+; VGAæ˜¾å¡
 
-		MOV		AL,0x13			; VGAƒOƒ‰ƒtƒBƒbƒNƒXA320x200x8bitƒJƒ‰[
-		MOV		AH,0x00
-		INT		0x10
-		MOV		BYTE [VMODE],8	; ‰æ–Êƒ‚[ƒh‚ðƒƒ‚‚·‚éiCŒ¾Œê‚ªŽQÆ‚·‚éj
-		MOV		WORD [SCRNX],320
-		MOV		WORD [SCRNY],200
-		MOV		DWORD [VRAM],0x000a0000
+	MOV		AL,0x13				; VGAã€€320x200x8bitå½©è‰²
+	MOV		AH,0x00
+	INT		0x10
+	MOV		BYTE [VMODE],8		; ç”»é¢æ¨¡å¼
+	MOV		WORD [SCRNX],320
+	MOV		WORD [SCRNY],200
+	MOV		DWORD [VRAM],0x000a0000
 
-; ƒL[ƒ{[ƒh‚ÌLEDó‘Ô‚ðBIOS‚É‹³‚¦‚Ä‚à‚ç‚¤
+; BIOSèŽ·å–é”®ç›˜ä¸Šå„ç§LEDçš„çŠ¶æ€ã€€
 
-		MOV		AH,0x02
-		INT		0x16 			; keyboard BIOS
-		MOV		[LEDS],AL
+	MOV		AH,0x02
+	INT		0x16 			; keyboard BIOS
+	MOV		[LEDS],AL
 
-;
-;
-;
-;
+; PICå…³é—­ä¸€åˆ‡ä¸­æ–­
 
-		MOV		AL,0xff
-		OUT		0x21,AL
-		NOP						;
-		OUT		0xa1,AL
+	MOV		AL,0xff
+	OUT		0x21,AL
+	NOP						; ç©ºæ“ä½œï¼Œæœ‰äº›CPUä¸æ”¯æŒè¿žç»­æ‰§è¡ŒOUT
+	OUT		0xa1,AL
 
-		CLI						;
+	CLI						; ç¦æ­¢CPUçº§åˆ«çš„ä¸­æ–­ï¼Œé˜²æ­¢è¢«æ‰“æ‰°
 
-;
+; ä¸ºäº†è®©CPUå¯ä»¥è®¿é—®1MBä»¥ä¸Šçš„å†…å­˜ï¼Œéœ€è¦è®¾å®šA20GATE
 
-		CALL	waitkbdout
-		MOV		AL,0xd1
-		OUT		0x64,AL
-		CALL	waitkbdout
-		MOV		AL,0xdf			; enable A20
-		OUT		0x60,AL
-		CALL	waitkbdout
+	CALL	waitkbdout
+	MOV		AL,0xd1
+	OUT		0x64,AL
+	CALL	waitkbdout
+	MOV		AL,0xdf			; å¼€å¯A20ä¿¡å·çº¿ï¼Œä½¿CPUå¯ä»¥è®¿é—®1MBä»¥ä¸Šå†…å­˜
+	OUT		0x60,AL
+	CALL	waitkbdout
 
-;
-		LGDT	[GDTR0]			;
-		MOV		EAX,CR0
-		AND		EAX,0x7fffffff	;
-		OR		EAX,0x00000001	;
-		MOV		CR0,EAX
-		JMP		pipelineflush
+; åˆ‡æ¢åˆ°ä¿æŠ¤æ¨¡å¼
+	LGDT	[GDTR0]			;
+	MOV		EAX,CR0
+	AND		EAX,0x7fffffff	;
+	OR		EAX,0x00000001	;
+	MOV		CR0,EAX
+	JMP		pipelineflush
 pipelineflush:
-		MOV		AX,1*8			;
-		MOV		DS,AX
-		MOV		ES,AX
-		MOV		FS,AX
-		MOV		GS,AX
-		MOV		SS,AX
+	MOV		AX,1*8			;
+	MOV		DS,AX
+	MOV		ES,AX
+	MOV		FS,AX
+	MOV		GS,AX
+	MOV		SS,AX
 
-; bootpack‚Ì“]‘—
+; å¤åˆ¶bootpack
 
-		MOV		ESI,bootpack	; “]‘—Œ³
-		MOV		EDI,BOTPAK		; “]‘—æ
-		MOV		ECX,512*1024/4
-		CALL	memcpy
+	MOV		ESI,bootpack	; 
+	MOV		EDI,BOTPAK		; 
+	MOV		ECX,512*1024/4
+	CALL	memcpy
 
-;
+; å¤åˆ¶å¯åŠ¨åŒºæ‰‡åŒº
 
-;
+	MOV		ESI,0x7c00		; 
+	MOV		EDI,DSKCAC		; 
+	MOV		ECX,512/4
+	CALL	memcpy
 
-		MOV		ESI,0x7c00		; “]‘—Œ³
-		MOV		EDI,DSKCAC		; “]‘—æ
-		MOV		ECX,512/4
-		CALL	memcpy
+; å¤åˆ¶å¯åŠ¨åŒºæ‰‡åŒºä¹‹å¤–çš„è¿è¡Œç¨‹åº
 
-;
+	MOV		ESI,DSKCAC0+512	; 
+	MOV		EDI,DSKCAC+512	; 
+	MOV		ECX,0
+	MOV		CL,BYTE [CYLS]
+	IMUL	ECX,512*18*2/4	;
+	SUB		ECX,512/4		;
+	CALL	memcpy
 
-		MOV		ESI,DSKCAC0+512	; “]‘—Œ³
-		MOV		EDI,DSKCAC+512	; “]‘—æ
-		MOV		ECX,0
-		MOV		CL,BYTE [CYLS]
-		IMUL	ECX,512*18*2/4	;
-		SUB		ECX,512/4		;
-		CALL	memcpy
+; bootpackçš„å¯åŠ¨
 
-;
-;
-
-;
-
-		MOV		EBX,BOTPAK
-		MOV		ECX,[EBX+16]
-		ADD		ECX,3			; ECX += 3;
-		SHR		ECX,2			; ECX /= 4;
-		JZ		skip			; “]‘—‚·‚é‚×‚«‚à‚Ì‚ª‚È‚¢
-		MOV		ESI,[EBX+20]	; “]‘—Œ³
-		ADD		ESI,EBX
-		MOV		EDI,[EBX+12]	; “]‘—æ
-		CALL	memcpy
+	MOV		EBX,BOTPAK
+	MOV		ECX,[EBX+16]
+	ADD		ECX,3			; ECX += 3;
+	SHR		ECX,2			; ECX /= 4;
+	JZ		skip			; 
+	MOV		ESI,[EBX+20]	; 
+	ADD		ESI,EBX
+	MOV		EDI,[EBX+12]	; 
+	CALL	memcpy
 skip:
-		MOV		ESP,[EBX+12]	;
-		JMP		DWORD 2*8:0x0000001b
+	MOV		ESP,[EBX+12]	;
+	JMP		DWORD 2*8:0x0000001b
 
 waitkbdout:
-		IN		 AL,0x64
-		AND		 AL,0x02
-		JNZ		waitkbdout		;
-		RET
+	IN		 AL,0x64
+	AND		 AL,0x02
+	JNZ		waitkbdout		;
+	RET
 
 memcpy:
-		MOV		EAX,[ESI]
-		ADD		ESI,4
-		MOV		[EDI],EAX
-		ADD		EDI,4
-		SUB		ECX,1
-		JNZ		memcpy			;
-		RET
+	MOV		EAX,[ESI]
+	ADD		ESI,4
+	MOV		[EDI],EAX
+	ADD		EDI,4
+	SUB		ECX,1
+	JNZ		memcpy			;
+	RET
+
 ;
 
-		ALIGNB	16
+	ALIGNB	16
 GDT0:
-		TIMES	8  DB 0				;
-		DW		0xffff,0x0000,0x9200,0x00cf	;
-		DW		0xffff,0x0000,0x9a28,0x0047	;
+	TIMES	8  DB 0				;
+	DW		0xffff,0x0000,0x9200,0x00cf	;
+	DW		0xffff,0x0000,0x9a28,0x0047	;
 
-		DW		0
+	DW		0
 GDTR0:
-		DW		8*3-1
-		DD		GDT0
+	DW		8*3-1
+	DD		GDT0
 
-		ALIGNB	16
+	ALIGNB	16
 bootpack:
