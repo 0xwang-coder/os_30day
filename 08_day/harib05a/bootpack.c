@@ -49,23 +49,23 @@ void HariMain(void)
 				i = fifo8_get(&mousefifo);
 				io_sti();
 				if (mouse_phase == 0) {
-					/* �}�E�X��0xfa��҂��Ă���i�K */
+					/*  */
 					if (i == 0xfa) {
 						mouse_phase = 1;
 					}
 				} else if (mouse_phase == 1) {
-					/* �}�E�X��1�o�C�g�ڂ�҂��Ă���i�K */
+					/*  */
 					mouse_dbuf[0] = i;
 					mouse_phase = 2;
 				} else if (mouse_phase == 2) {
-					/* �}�E�X��2�o�C�g�ڂ�҂��Ă���i�K */
+					/*  */
 					mouse_dbuf[1] = i;
 					mouse_phase = 3;
 				} else if (mouse_phase == 3) {
-					/* �}�E�X��3�o�C�g�ڂ�҂��Ă���i�K */
+					/*  */
 					mouse_dbuf[2] = i;
 					mouse_phase = 1;
-					/* �f�[�^��3�o�C�g�������̂ŕ\�� */
+					/*  */
 					sprintf(s, "%02X %02X %02X", mouse_dbuf[0], mouse_dbuf[1], mouse_dbuf[2]);
 					boxfill8(binfo->vram, binfo->scrnx, COL8_008484, 32, 16, 32 + 8 * 8 - 1, 31);
 					putfonts8_asc(binfo->vram, binfo->scrnx, 32, 16, COL8_FFFFFF, s);
@@ -84,7 +84,7 @@ void HariMain(void)
 
 void wait_KBC_sendready(void)
 {
-	/* �L�[�{�[�h�R���g���[�����f�[�^���M�\�ɂȂ�̂�҂� */
+	/*  */
 	for (;;) {
 		if ((io_in8(PORT_KEYSTA) & KEYSTA_SEND_NOTREADY) == 0) {
 			break;
@@ -95,7 +95,7 @@ void wait_KBC_sendready(void)
 
 void init_keyboard(void)
 {
-	/* �L�[�{�[�h�R���g���[���̏����� */
+	/*  */
 	wait_KBC_sendready();
 	io_out8(PORT_KEYCMD, KEYCMD_WRITE_MODE);
 	wait_KBC_sendready();
@@ -108,10 +108,10 @@ void init_keyboard(void)
 
 void enable_mouse(void)
 {
-	/* �}�E�X�L�� */
+	/*  */
 	wait_KBC_sendready();
 	io_out8(PORT_KEYCMD, KEYCMD_SENDTO_MOUSE);
 	wait_KBC_sendready();
 	io_out8(PORT_KEYDAT, MOUSECMD_ENABLE);
-	return; /* ���܂�������ACK(0xfa)�����M����Ă��� */
+	return;
 }

@@ -9,20 +9,23 @@ void HariMain(void)
 	char s[40], mcursor[256];
 	int mx, my;
 
-	// init_gdtidt();
-	// init_pic();
-	// io_sti(); /* IDT/PIC */
+	// 分段表
+	init_gdtidt();
+	init_pic();
+	io_sti(); /* IDT/PIC */
 
 	// 调色板
 	init_palette();
 	init_screen8(binfo->vram, binfo->scrnx, binfo->scrny);
 	mx = (binfo->scrnx - 16) / 2; /* */
 	my = (binfo->scrny - 28 - 16) / 2;
+	// 鼠标
 	init_mouse_cursor8(mcursor, COL8_008484);
 	putblock8_8(binfo->vram, binfo->scrnx, 16, 16, mx, my, mcursor, 16);
 	sprintf(s, "(%d, %d)", mx, my);
 	putfonts8_asc(binfo->vram, binfo->scrnx, 0, 0, COL8_FFFFFF, s);
 
+	// 设定中断屏蔽寄存器
 	io_out8(PIC0_IMR, 0xf9); /* PIC (11111001) */
 	io_out8(PIC1_IMR, 0xef); /* 11101111) */
 

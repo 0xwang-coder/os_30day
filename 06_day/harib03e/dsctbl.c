@@ -6,7 +6,7 @@ void init_gdtidt(void)
 	struct GATE_DESCRIPTOR    *idt = (struct GATE_DESCRIPTOR    *) ADR_IDT;
 	int i;
 
-	/* GDT�̏����� */
+	/* GDT设定 */
 	for (i = 0; i <= LIMIT_GDT / 8; i++) {
 		set_segmdesc(gdt + i, 0, 0, 0);
 	}
@@ -14,13 +14,13 @@ void init_gdtidt(void)
 	set_segmdesc(gdt + 2, LIMIT_BOTPAK, ADR_BOTPAK, AR_CODE32_ER);
 	load_gdtr(LIMIT_GDT, ADR_GDT);
 
-	/* IDT�̏����� */
+	/* IDT设定 */
 	for (i = 0; i <= LIMIT_IDT / 8; i++) {
 		set_gatedesc(idt + i, 0, 0, 0);
 	}
 	load_idtr(LIMIT_IDT, ADR_IDT);
 
-	/* IDT�̐ݒ� */
+	/* 中断函数注册到IDT */
 	set_gatedesc(idt + 0x21, (int) asm_inthandler21, 2 * 8, AR_INTGATE32);
 	set_gatedesc(idt + 0x27, (int) asm_inthandler27, 2 * 8, AR_INTGATE32);
 	set_gatedesc(idt + 0x2c, (int) asm_inthandler2c, 2 * 8, AR_INTGATE32);
@@ -34,9 +34,12 @@ void set_segmdesc(struct SEGMENT_DESCRIPTOR *sd, unsigned int limit, int base, i
 		ar |= 0x8000; /* G_bit = 1 */
 		limit /= 0x1000;
 	}
+	// 段上限
 	sd->limit_low    = limit & 0xffff;
+	// 地址，段的基址: low 2 + mid 1 + high 1 = 4B
 	sd->base_low     = base & 0xffff;
 	sd->base_mid     = (base >> 16) & 0xff;
+	// 权限
 	sd->access_right = ar & 0xff;
 	sd->limit_high   = ((limit >> 16) & 0x0f) | ((ar >> 8) & 0xf0);
 	sd->base_high    = (base >> 24) & 0xff;

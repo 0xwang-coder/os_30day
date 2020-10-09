@@ -38,7 +38,7 @@ void HariMain(void)
 	struct BOOTINFO *binfo = (struct BOOTINFO *) 0x0ff0;
 	extern char hankaku[4096];
 
-	// init_palette();
+	init_palette();
 	init_screen(binfo->vram, binfo->scrnx, binfo->scrny);
 	putfont8(binfo->vram, binfo->scrnx,  8, 8, COL8_FFFFFF, hankaku + 'A' * 16);
 	putfont8(binfo->vram, binfo->scrnx, 16, 8, COL8_FFFFFF, hankaku + 'B' * 16);

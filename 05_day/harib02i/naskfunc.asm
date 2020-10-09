@@ -1,14 +1,14 @@
 ; naskfunc
-; TAB=
+; TAB=4
 
-global	io_hlt, io_cli, io_sti, io_stihlt
-global	io_in8,  io_in16,  io_in32
-global	io_out8, io_out16, io_out32
-global	io_load_eflags, io_store_eflags
-global	load_gdtr, load_idtr
+section .data
 
 section .text
-section .data
+	global	io_hlt, io_cli, io_sti, io_stihlt
+	global	io_in8,  io_in16,  io_in32
+	global	io_out8, io_out16, io_out32
+	global	io_load_eflags, io_store_eflags
+	global	load_gdtr, load_idtr
 
 io_hlt:	; void io_hlt(void);
 		HLT

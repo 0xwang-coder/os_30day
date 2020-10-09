@@ -41,7 +41,7 @@ void HariMain(void)
 		0x24, 0x7e, 0x42, 0x42, 0x42, 0xe7, 0x00, 0x00
 	};
 
-	// init_palette();
+	init_palette();
 	init_screen(binfo->vram, binfo->scrnx, binfo->scrny);
 	putfont8(binfo->vram, binfo->scrnx, 10, 10, COL8_FFFFFF, font_A);
 
@@ -72,8 +72,6 @@ void init_palette(void)
 	};
 	set_palette(0, 15, table_rgb);
 	return;
-
-	/* static char ���߂́A�f�[�^�ɂ����g���Ȃ�����DB���ߑ��� */
 }
 
 void set_palette(int start, int end, unsigned char *rgb)

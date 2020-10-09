@@ -1,26 +1,22 @@
-/* FIFOƒ‰ƒCƒuƒ‰ƒŠ */
-
 #include "bootpack.h"
 
 #define FLAGS_OVERRUN		0x0001
 
 void fifo8_init(struct FIFO8 *fifo, int size, unsigned char *buf)
-/* FIFOƒoƒbƒtƒ@‚Ì‰Šú‰» */
 {
 	fifo->size = size;
 	fifo->buf = buf;
-	fifo->free = size; /* ‹ó‚« */
+	fifo->free = size; /* ï¿½ï¿½ */
 	fifo->flags = 0;
-	fifo->p = 0; /* ‘‚«ž‚ÝˆÊ’u */
-	fifo->q = 0; /* “Ç‚Ýž‚ÝˆÊ’u */
+	fifo->p = 0; /* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÝˆÊ’u */
+	fifo->q = 0; /* ï¿½Ç‚Ýï¿½ï¿½ÝˆÊ’u */
 	return;
 }
 
 int fifo8_put(struct FIFO8 *fifo, unsigned char data)
-/* FIFO‚Öƒf[ƒ^‚ð‘—‚èž‚ñ‚Å’~‚¦‚é */
 {
 	if (fifo->free == 0) {
-		/* ‹ó‚«‚ª‚È‚­‚Ä‚ ‚Ó‚ê‚½ */
+		/* ï¿½ó‚«‚ï¿½ï¿½È‚ï¿½ï¿½Ä‚ï¿½ï¿½Ó‚ê‚½ */
 		fifo->flags |= FLAGS_OVERRUN;
 		return -1;
 	}
@@ -34,11 +30,10 @@ int fifo8_put(struct FIFO8 *fifo, unsigned char data)
 }
 
 int fifo8_get(struct FIFO8 *fifo)
-/* FIFO‚©‚çƒf[ƒ^‚ðˆê‚Â‚Æ‚Á‚Ä‚­‚é */
 {
 	int data;
 	if (fifo->free == fifo->size) {
-		/* ƒoƒbƒtƒ@‚ª‹ó‚Á‚Û‚Ì‚Æ‚«‚ÍA‚Æ‚è‚ ‚¦‚¸-1‚ª•Ô‚³‚ê‚é */
+		/* ï¿½oï¿½bï¿½tï¿½@ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Û‚Ì‚Æ‚ï¿½ï¿½ÍAï¿½Æ‚è‚ ï¿½ï¿½ï¿½ï¿½-1ï¿½ï¿½ï¿½Ô‚ï¿½ï¿½ï¿½ï¿½ */
 		return -1;
 	}
 	data = fifo->buf[fifo->q];
@@ -51,7 +46,6 @@ int fifo8_get(struct FIFO8 *fifo)
 }
 
 int fifo8_status(struct FIFO8 *fifo)
-/* ‚Ç‚Ì‚­‚ç‚¢ƒf[ƒ^‚ª—­‚Ü‚Á‚Ä‚¢‚é‚©‚ð•ñ‚·‚é */
 {
 	return fifo->size - fifo->free;
 }
