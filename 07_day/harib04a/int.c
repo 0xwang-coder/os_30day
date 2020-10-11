@@ -1,7 +1,7 @@
 #include "bootpack.h"
-// #include <stdio.h>
+#include <stdio.h>
 
-extern void sprintf(char *str, char *fmt, ...);
+// extern void sprintf(char *str, char *fmt, ...);
 
 void init_pic(void)
 {
@@ -35,6 +35,8 @@ void inthandler21(int *esp)
 	data = io_in8(PORT_KEYDAT);
 
 	sprintf(s, "%02X", data);
+	printf("%s\n", s);
+
 	boxfill8(binfo->vram, binfo->scrnx, COL8_008484, 0, 16, 15, 31);
 	putfonts8_asc(binfo->vram, binfo->scrnx, 0, 16, COL8_FFFFFF, s);
 

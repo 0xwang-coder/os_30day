@@ -1,7 +1,8 @@
-# harib03b/Makefile
+# Makefile
 
+#  -static
 CC = gcc
-CFLAGS = -c -m32 -nostdlib -fno-pic
+CFLAGS = -c -m32 -fno-pic -nostdlib -std=c99
 
 default :
 	make run
@@ -28,16 +29,21 @@ hankaku.o : hankaku.c
 bootpack.o : bootpack.c
 	$(CC) $(CFLAGS) bootpack.c -o bootpack.o
 mysprintf.o : mysprintf.c
-	$(CC) $(CFLAGS) -nostdlib $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 int.o : int.c
 	$(CC) $(CFLAGS) int.c -o int.o
 	
 #OBJS_BOOTPACK = bootpack.c nasmfunc.o hankaku.o mysprintf.o graphic.o dsctbl.o
 #bootpack.hrb : $(OBJS_BOOTPACK) har.ld
-#	$(CC) -m32 -march=i486 -nostdlib -nostdinc -T har.ld $(OBJS_BOOTPACK) -o $@
-OBJS_BOOTPACK = bootpack.o nasmfunc.o hankaku.o int.o mysprintf.o graphic.o dsctbl.o
+#	$(CC) -m32 -march=i486 -nostdlib -nostdinc -T har.ld /usr/lib32/crt1.o /usr/lib32/crti.o /usr/lib32/crtbegin*.o /usr/lib32/crtend*.o
+OBJS_BOOTPACK = bootpack.o nasmfunc.o hankaku.o int.o graphic.o dsctbl.o 
+# -fno-pie -shared -dynamic-linker /usr/lib32/ld-linux.so.2 -lgcc_eh 
 bootpack.hrb : $(OBJS_BOOTPACK) har.ld
-	ld -m elf_i386 -T har.ld $(OBJS_BOOTPACK) -o $@
+	# ld -m elf_i386 -fno-pic -shared -L/usr/lib32 -T har.ld $(OBJS_BOOTPACK) -o $@ \
+	# -lc -lg -ldl -lgcc -lgcc_eh
+	# 解决无法链接libdl.a的问题  -fno-pie 
+	ld -static -m elf_i386 -shared -fno-pic -L/usr/lib32 -T har.ld $(OBJS_BOOTPACK)  -o $@ \
+	--start-group /usr/lib32/libdl.a /usr/lib32/libgcc.a /usr/lib32/libgcc_eh.a /usr/lib32/libc.a --end-group
 
 haribote.sys : asmhead.bin bootpack.hrb Makefile
 	cat asmhead.bin bootpack.hrb > haribote.sys
