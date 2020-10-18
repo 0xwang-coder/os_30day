@@ -1,7 +1,7 @@
 ; naskfunc
 ; TAB=4
 
-section .data
+;section .data
 
 section .text
 	global	io_hlt, io_cli, io_sti, io_stihlt

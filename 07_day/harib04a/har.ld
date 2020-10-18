@@ -20,13 +20,11 @@ SECTIONS
 
     .text : { *(.text) }
 
-    /*
     .data 0x310000 : AT ( ADDR(.text) + SIZEOF(.text) ) {
         *(.data)
         *(.rodata*)
         *(.bss)
     }
-    */
 
     /DISCARD/ : { *(.eh_frame) }
 }

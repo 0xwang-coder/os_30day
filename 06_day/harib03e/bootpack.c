@@ -1,7 +1,5 @@
 #include "bootpack.h"
-// #include <stdio.h>
-
-extern void sprintf(char *str, char *fmt, ...);
+#include <stdio.h>
 
 void HariMain(void)
 {

@@ -3,7 +3,7 @@
 
 #include <stdarg.h>
  
-//10進数からASCIIコードに変換
+//　10进制数
 int dec2asc(char *str, int dec) {
     int len = 0, len_buf; //桁数
     int buf[10];
@@ -19,9 +19,9 @@ int dec2asc(char *str, int dec) {
     return len_buf;
 }
  
-//16進数からASCIIコードに変換
-int hex2asc(char *str, int dec) { //10で割れた回数（つまり桁数）をlenに、各桁をbufに格納
-    int len = 0, len_buf; //桁数
+//　16进制数
+int hex2asc(char *str, int dec) {
+    int len = 0, len_buf; //
     int buf[10];
     while (1) {
         buf[len++] = dec % 16;
