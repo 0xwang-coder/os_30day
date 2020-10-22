@@ -1,93 +1,83 @@
-OBJS_BOOTPACK = bootpack.obj naskfunc.obj hankaku.obj graphic.obj dsctbl.obj \
-		int.obj fifo.obj keyboard.obj mouse.obj
-
-TOOLPATH = ../z_tools/
-INCPATH  = ../z_tools/haribote/
-
-MAKE     = $(TOOLPATH)make.exe -r
-NASK     = $(TOOLPATH)nask.exe
-CC1      = $(TOOLPATH)cc1.exe -I$(INCPATH) -Os -Wall -quiet
-GAS2NASK = $(TOOLPATH)gas2nask.exe -a
-OBJ2BIM  = $(TOOLPATH)obj2bim.exe
-MAKEFONT = $(TOOLPATH)makefont.exe
-BIN2OBJ  = $(TOOLPATH)bin2obj.exe
-BIM2HRB  = $(TOOLPATH)bim2hrb.exe
-RULEFILE = $(TOOLPATH)haribote/haribote.rul
-EDIMG    = $(TOOLPATH)edimg.exe
-IMGTOL   = $(TOOLPATH)imgtol.com
-COPY     = copy
-DEL      = del
-
-# デフォルト動作
+CC = gcc
+CFLAGS = -c -m32 -nostdlib -fno-pic
 
 default :
-	$(MAKE) img
+	make run
 
-# ファイル生成規則
+#--------------------
+#	hankaku char
+#--------------------
+convHankakuTxt : convHankakuTxt.c
+	$(CC) $< -o $@
 
-ipl10.bin : ipl10.nas Makefile
-	$(NASK) ipl10.nas ipl10.bin ipl10.lst
+hankaku.c : hankaku.txt convHankakuTxt
+	./convHankakuTxt
 
-asmhead.bin : asmhead.nas Makefile
-	$(NASK) asmhead.nas asmhead.bin asmhead.lst
+#--------------------
+#--------------------
+ipl.bin : ipl.asm
+	nasm $< -o $@ -l $*.lst
 
-hankaku.bin : hankaku.txt Makefile
-	$(MAKEFONT) hankaku.txt hankaku.bin
+asmhead.bin : asmhead.asm
+	nasm $< -o $@ -l $*.lst
 
-hankaku.obj : hankaku.bin Makefile
-	$(BIN2OBJ) hankaku.bin hankaku.obj _hankaku
+nasmfunc.o : nasmfunc.asm
+	nasm -f elf $< -o $@ -l $*.lst
 
-bootpack.bim : $(OBJS_BOOTPACK) Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:bootpack.bim stack:3136k map:bootpack.map \
-		$(OBJS_BOOTPACK)
-# 3MB+64KB=3136KB
+hankaku.o : hankaku.c
+	$(CC) $(CFLAGS) hankaku.c -o hankaku.o
+bootpack.o : bootpack.c
+	$(CC) $(CFLAGS) bootpack.c -o bootpack.o
+mysprintf.o : mysprintf.c
+	$(CC) $(CFLAGS) -nostdlib $^ -o $@
 
-bootpack.hrb : bootpack.bim Makefile
-	$(BIM2HRB) bootpack.bim bootpack.hrb 0
+fifo.o : fifo.c
+	$(CC) $(CFLAGS) fifo.c -o fifo.o
+int.o : int.c
+	$(CC) $(CFLAGS) int.c -o int.o
+keyboard.o : keyboard.c
+	$(CC) $(CFLAGS) keyboard.c -o keyboard.o
+mouse.o : mouse.c
+	$(CC) $(CFLAGS) mouse.c -o mouse.o
+#OBJS_BOOTPACK = bootpack.c nasmfunc.o hankaku.o mysprintf.o graphic.o dsctbl.o
+#bootpack.hrb : $(OBJS_BOOTPACK) har.ld
+#	$(CC) -m32 -march=i486 -nostdlib -nostdinc -T har.ld $(OBJS_BOOTPACK) -o $@
+OBJS_BOOTPACK = bootpack.o nasmfunc.o hankaku.o fifo.o int.o keyboard.o mouse.o mysprintf.o graphic.o dsctbl.o
+bootpack.hrb : $(OBJS_BOOTPACK) har.ld
+	ld -m elf_i386 -T har.ld $(OBJS_BOOTPACK) -o $@
 
 haribote.sys : asmhead.bin bootpack.hrb Makefile
-	copy /B asmhead.bin+bootpack.hrb haribote.sys
+	cat asmhead.bin bootpack.hrb > haribote.sys
 
-haribote.img : ipl10.bin haribote.sys Makefile
-	$(EDIMG)   imgin:../z_tools/fdimg0at.tek \
-		wbinimg src:ipl10.bin len:512 from:0 to:0 \
-		copy from:haribote.sys to:@: \
-		imgout:haribote.img
+haribote.img : ipl.bin haribote.sys Makefile
+	mformat -f 1440 -C -B ipl.bin -i haribote.img ::
+	mcopy haribote.sys -i haribote.img ::
 
-# 一般規則
+#--------------------
+#--------------------
+%.o : %.c
+	$(CC) $(CFLAGS) $*.c -o $*.o
 
-%.gas : %.c bootpack.h Makefile
-	$(CC1) -o $*.gas $*.c
-
-%.nas : %.gas Makefile
-	$(GAS2NASK) $*.gas $*.nas
-
-%.obj : %.nas Makefile
-	$(NASK) $*.nas $*.obj $*.lst
-
-# コマンド
-
+#--------------------
+#--------------------
 img :
-	$(MAKE) haribote.img
+	make haribote.img
 
 run :
-	$(MAKE) img
-	$(COPY) haribote.img ..\z_tools\qemu\fdimage0.bin
-	$(MAKE) -C ../z_tools/qemu
+	make img
+	qemu-system-i386 -fda haribote.img	# "-fda" for floppy disk
 
-install :
-	$(MAKE) img
-	$(IMGTOL) w a: haribote.img
+debug:
+	make img
+	qemu-system-i386 -fda haribote.img -gdb tcp::10000 -S
 
 clean :
-	-$(DEL) *.bin
-	-$(DEL) *.lst
-	-$(DEL) *.obj
-	-$(DEL) bootpack.map
-	-$(DEL) bootpack.bim
-	-$(DEL) bootpack.hrb
-	-$(DEL) haribote.sys
+	rm *.o
+	rm *.lst
+	rm *.bin
+	rm *.hrb
+	rm *.sys
 
 src_only :
-	$(MAKE) clean
-	-$(DEL) haribote.img
+	rm haribote.img
+	make clean
