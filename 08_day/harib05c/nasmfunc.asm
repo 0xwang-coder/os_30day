@@ -10,7 +10,7 @@ section .text
 	global	io_load_eflags, io_store_eflags
 	global	load_gdtr, load_idtr
 	global	asm_inthandler21, asm_inthandler27, asm_inthandler2c
-	EXTERN	inthandler21, inthandler27, inthandler2c
+	extern	inthandler21, inthandler27, inthandler2c
 
 io_hlt:	; void io_hlt(void);
 		HLT
@@ -30,10 +30,10 @@ io_stihlt:	; void io_stihlt(void);
 		RET
 
 io_in8:	; int io_in8(int port);
-		MOV		EDX,[ESP+4]		; port
-		MOV		EAX,0
-		IN		AL,DX
-		RET
+	MOV		EDX,[ESP+4]		; port
+	MOV		EAX,0
+	IN		AL,DX
+	RET
 
 io_in16:	; int io_in16(int port);
 		MOV		EDX,[ESP+4]		; port

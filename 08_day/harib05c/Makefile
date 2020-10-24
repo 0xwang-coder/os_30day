@@ -1,7 +1,7 @@
 # harib03b/Makefile
 
 CC = gcc
-CFLAGS = -c -m32 -nostdlib -fno-pic
+CFLAGS = -c -m32 -fno-pic
 
 default :
 	make run
@@ -63,7 +63,8 @@ img :
 
 run :
 	make img
-	qemu-system-i386 -fda haribote.img	# "-fda" for floppy disk
+	qemu-system-i386 -fda haribote.img -monitor stdio -show-cursor
+
 
 debug:
 	make img

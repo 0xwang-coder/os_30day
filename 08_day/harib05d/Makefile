@@ -63,11 +63,10 @@ img :
 
 run :
 	make img
-	qemu-system-i386 -fda haribote.img	# "-fda" for floppy disk
-
+	qemu-system-i386 -fda haribote.img -monitor stdio -show-cursor
 debug:
 	make img
-	qemu-system-i386 -fda haribote.img -gdb tcp::10000 -S
+	qemu-system-i386 -fda haribote.img -gdb tcp::10000 -S 
 
 clean :
 	rm *.o

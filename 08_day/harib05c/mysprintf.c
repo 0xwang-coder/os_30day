@@ -46,7 +46,7 @@ void sprintf(char *str, char *fmt, ...) {
             fmt++;
             switch(*fmt){
                 case 'd':
-                    len = dec2asc(str, va_arg (list, int));
+                    len = dec2asc(str, va_arg(list, int));
                     break;
                 case 'x':
                     len = hex2asc(str, va_arg (list, int));

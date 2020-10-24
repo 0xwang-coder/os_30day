@@ -21,6 +21,7 @@ void HariMain(void)
 	io_out8(PIC0_IMR, 0xf9); /* PIC1�ƃL�[�{�[�h������(11111001) */
 	io_out8(PIC1_IMR, 0xef); /* �}�E�X������(11101111) */
 
+	// 初始化键盘
 	init_keyboard();
 	enable_mouse(&mdec);
 	memtotal = memtest(0x00400000, 0xbfffffff);
@@ -37,8 +38,10 @@ void HariMain(void)
 	sheet_setbuf(sht_mouse, buf_mouse, 16, 16, 99);
 	init_screen8(buf_back, binfo->scrnx, binfo->scrny);
 	init_mouse_cursor8(buf_mouse, 99);
+
+	// 
 	sheet_slide(shtctl, sht_back, 0, 0);
-	mx = (binfo->scrnx - 16) / 2; /* ��ʒ����ɂȂ�悤�ɍ��W�v�Z */
+	mx = (binfo->scrnx - 16) / 2;
 	my = (binfo->scrny - 28 - 16) / 2;
 	sheet_slide(shtctl, sht_mouse, mx, my);
 	sheet_updown(shtctl, sht_back,  0);
@@ -50,6 +53,7 @@ void HariMain(void)
 	putfonts8_asc(buf_back, binfo->scrnx, 0, 32, COL8_FFFFFF, s);
 	sheet_refresh(shtctl, sht_back, 0, 0, binfo->scrnx, 48);
 
+	// 
 	for (;;) {
 		io_cli();
 		if (fifo8_status(&keyfifo) + fifo8_status(&mousefifo) == 0) {

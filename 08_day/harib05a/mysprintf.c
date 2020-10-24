@@ -30,8 +30,8 @@ int hex2asc(char *str, int dec) { //10で割れた回数（つまり桁数）を
     }
     len_buf = len;
     while (len) {
-        len --;
-        *(str++) = (buf[len]<10)?(buf[len] + 0x30):(buf[len] - 9 + 0x60);
+        len--;
+        *(str++) = (buf[len]<10) ? (buf[len] + 0x30) : (buf[len] - 9 + 0x60);
     }
     return len_buf;
 }
@@ -46,10 +46,10 @@ void sprintf(char *str, char *fmt, ...) {
             fmt++;
             switch(*fmt){
                 case 'd':
-                    len = dec2asc(str, va_arg (list, int));
+                    len = dec2asc(str, va_arg(list, int));
                     break;
                 case 'x':
-                    len = hex2asc(str, va_arg (list, int));
+                    len = hex2asc(str, va_arg(list, int));
                     break;
             }
             str += len; fmt++;
@@ -57,6 +57,6 @@ void sprintf(char *str, char *fmt, ...) {
             *(str++) = *(fmt++);
         }   
     }
-    *str = 0x00; //最後にNULLを追加
+    *str = 0x00;
     va_end (list);
 }

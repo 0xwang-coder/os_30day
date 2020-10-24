@@ -30,8 +30,8 @@ int hex2asc(char *str, int dec) { //10で割れた回数（つまり桁数）を
     }
     len_buf = len;
     while (len) {
-        len --;
-        *(str++) = (buf[len]<10)?(buf[len] + 0x30):(buf[len] - 9 + 0x60);
+        len--;
+        *(str++) = (buf[len]<10) ? (buf[len] + 0x30) : (buf[len] - 9 + 0x60);
     }
     return len_buf;
 }

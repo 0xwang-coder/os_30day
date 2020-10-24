@@ -3,7 +3,6 @@
 #define FLAGS_OVERRUN		0x0001
 
 void fifo8_init(struct FIFO8 *fifo, int size, unsigned char *buf)
-/* FIFO�o�b�t�@�̏����� */
 {
 	fifo->size = size;
 	fifo->buf = buf;
@@ -15,7 +14,6 @@ void fifo8_init(struct FIFO8 *fifo, int size, unsigned char *buf)
 }
 
 int fifo8_put(struct FIFO8 *fifo, unsigned char data)
-/* FIFO�փf�[�^�𑗂荞��Œ~���� */
 {
 	if (fifo->free == 0) {
 		/* �󂫂��Ȃ��Ă��ӂꂽ */
@@ -32,7 +30,6 @@ int fifo8_put(struct FIFO8 *fifo, unsigned char data)
 }
 
 int fifo8_get(struct FIFO8 *fifo)
-/* FIFO����f�[�^����Ƃ��Ă��� */
 {
 	int data;
 	if (fifo->free == fifo->size) {

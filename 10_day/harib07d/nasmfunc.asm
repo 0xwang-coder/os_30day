@@ -99,55 +99,55 @@ store_cr0:		; void store_cr0(int cr0);
 	RET
 
 asm_inthandler21:
-		PUSH	ES
-		PUSH	DS
-		PUSHAD
-		MOV		EAX,ESP
-		PUSH	EAX
-		MOV		AX,SS
-		MOV		DS,AX
-		MOV		ES,AX
-		CALL	inthandler21
-		POP		EAX
-		POPAD
-		POP		DS
-		POP		ES
-		IRETD
+	PUSH	ES
+	PUSH	DS
+	PUSHAD
+	MOV		EAX,ESP
+	PUSH	EAX
+	MOV		AX,SS
+	MOV		DS,AX
+	MOV		ES,AX
+	CALL	inthandler21
+	POP		EAX
+	POPAD
+	POP		DS
+	POP		ES
+	IRETD
 
 asm_inthandler27:
-		PUSH	ES
-		PUSH	DS
-		PUSHAD
-		MOV		EAX,ESP
-		PUSH	EAX
-		MOV		AX,SS
-		MOV		DS,AX
-		MOV		ES,AX
-		CALL	inthandler27
-		POP		EAX
-		POPAD
-		POP		DS
-		POP		ES
-		IRETD
+	PUSH	ES
+	PUSH	DS
+	PUSHAD
+	MOV		EAX,ESP
+	PUSH	EAX
+	MOV		AX,SS
+	MOV		DS,AX
+	MOV		ES,AX
+	CALL	inthandler27
+	POP		EAX
+	POPAD
+	POP		DS
+	POP		ES
+	IRETD
 
 asm_inthandler2c:
-		PUSH	ES
-		PUSH	DS
-		PUSHAD
-		MOV		EAX,ESP
-		PUSH	EAX
-		MOV		AX,SS
-		MOV		DS,AX
-		MOV		ES,AX
-		CALL	inthandler2c
-		POP		EAX
-		POPAD
-		POP		DS
-		POP		ES
-		IRETD
+	PUSH	ES
+	PUSH	DS
+	PUSHAD
+	MOV		EAX,ESP
+	PUSH	EAX
+	MOV		AX,SS
+	MOV		DS,AX
+	MOV		ES,AX
+	CALL	inthandler2c
+	POP		EAX
+	POPAD
+	POP		DS
+	POP		ES
+	IRETD
 
 memtest_sub:	; unsigned int memtest_sub(unsigned int start, unsigned int end)
-	PUSH	EDI						; �iEBX, ESI, EDI ���g�������̂Łj
+	PUSH	EDI						; EBX, ESI, EDI
 	PUSH	ESI
 	PUSH	EBX
 	MOV		ESI,0xaa55aa55			; pat0 = 0xaa55aa55;

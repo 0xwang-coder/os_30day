@@ -61,7 +61,7 @@ img :
 
 run :
 	make img
-	qemu-system-i386 -fda haribote.img	# "-fda" for floppy disk
+	qemu-system-i386 -fda haribote.img -k en-us	# "-fda" for floppy disk
 
 debug:
 	make img

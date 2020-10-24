@@ -15,11 +15,11 @@ void HariMain(void)
 
 	init_gdtidt();
 	init_pic();
-	io_sti(); /* IDT/PIC�̏��������I������̂�CPU�̊��荞�݋֎~������ */
+	io_sti(); /* IDT/PIC */
 	fifo8_init(&keyfifo, 32, keybuf);
 	fifo8_init(&mousefifo, 128, mousebuf);
-	io_out8(PIC0_IMR, 0xf9); /* PIC1�ƃL�[�{�[�h������(11111001) */
-	io_out8(PIC1_IMR, 0xef); /* �}�E�X������(11101111) */
+	io_out8(PIC0_IMR, 0xf9); /* PIC1(11111001) */
+	io_out8(PIC1_IMR, 0xef); /* (11101111) */
 
 	init_keyboard();
 	enable_mouse(&mdec);
@@ -79,7 +79,7 @@ void HariMain(void)
 					}
 					boxfill8(buf_back, binfo->scrnx, COL8_008484, 32, 16, 32 + 15 * 8 - 1, 31);
 					putfonts8_asc(buf_back, binfo->scrnx, 32, 16, COL8_FFFFFF, s);
-					/*  */
+					/* 移动光标 */
 					mx += mdec.x;
 					my += mdec.y;
 					if (mx < 0) {
@@ -95,9 +95,9 @@ void HariMain(void)
 						my = binfo->scrny - 16;
 					}
 					sprintf(s, "(%d, %d)", mx, my);
-					boxfill8(buf_back, binfo->scrnx, COL8_008484, 0, 0, 79, 15); /* ���W���� */
-					putfonts8_asc(buf_back, binfo->scrnx, 0, 0, COL8_FFFFFF, s); /* ���W���� */
-					sheet_slide(shtctl, sht_mouse, mx, my); /* sheet_refresh���܂� */
+					boxfill8(buf_back, binfo->scrnx, COL8_008484, 0, 0, 79, 15);
+					putfonts8_asc(buf_back, binfo->scrnx, 0, 0, COL8_FFFFFF, s);
+					sheet_slide(shtctl, sht_mouse, mx, my);
 				}
 			}
 		}
