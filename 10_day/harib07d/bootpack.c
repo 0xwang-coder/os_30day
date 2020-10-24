@@ -70,7 +70,6 @@ void HariMain(void)
 				i = fifo8_get(&mousefifo);
 				io_sti();
 				if (mouse_decode(&mdec, i) != 0) {
-					/* �f�[�^��3�o�C�g�������̂ŕ\�� */
 					sprintf(s, "[lcr %d %d]", mdec.x, mdec.y);
 					if ((mdec.btn & 0x01) != 0) {
 						s[1] = 'L';
@@ -84,7 +83,6 @@ void HariMain(void)
 					boxfill8(buf_back, binfo->scrnx, COL8_008484, 32, 16, 32 + 15 * 8 - 1, 31);
 					putfonts8_asc(buf_back, binfo->scrnx, 32, 16, COL8_FFFFFF, s);
 					sheet_refresh(shtctl, sht_back, 32, 16, 32 + 15 * 8, 32);
-					/* �}�E�X�J�[�\���̈ړ� */
 					mx += mdec.x;
 					my += mdec.y;
 					if (mx < 0) {
