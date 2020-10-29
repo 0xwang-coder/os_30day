@@ -1,5 +1,3 @@
-/* ƒ}ƒ‹ƒ`ƒ^ƒXƒNŠÖŒW */
-
 #include "bootpack.h"
 
 struct TASKCTL *taskctl;
@@ -17,7 +15,7 @@ struct TASK *task_init(struct MEMMAN *memman)
 		set_segmdesc(gdt + TASK_GDT0 + i, 103, (int) &taskctl->tasks0[i].tss, AR_TSS32);
 	}
 	task = task_alloc();
-	task->flags = 2; /* “®ì’†ƒ}[ƒN */
+	task->flags = 2; /* ï¿½ï¿½ï¿½ì’†ï¿½}ï¿½[ï¿½N */
 	taskctl->running = 1;
 	taskctl->now = 0;
 	taskctl->tasks[0] = task;
@@ -34,9 +32,9 @@ struct TASK *task_alloc(void)
 	for (i = 0; i < MAX_TASKS; i++) {
 		if (taskctl->tasks0[i].flags == 0) {
 			task = &taskctl->tasks0[i];
-			task->flags = 1; /* Žg—p’†ƒ}[ƒN */
+			task->flags = 1; /* ï¿½gï¿½pï¿½ï¿½ï¿½}ï¿½[ï¿½N */
 			task->tss.eflags = 0x00000202; /* IF = 1; */
-			task->tss.eax = 0; /* ‚Æ‚è‚ ‚¦‚¸0‚É‚µ‚Ä‚¨‚­‚±‚Æ‚É‚·‚é */
+			task->tss.eax = 0; /* ï¿½Æ‚è‚ ï¿½ï¿½ï¿½ï¿½0ï¿½É‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ‚É‚ï¿½ï¿½ï¿½ */
 			task->tss.ecx = 0;
 			task->tss.edx = 0;
 			task->tss.ebx = 0;
@@ -52,12 +50,12 @@ struct TASK *task_alloc(void)
 			return task;
 		}
 	}
-	return 0; /* ‚à‚¤‘S•”Žg—p’† */
+	return 0; /* ï¿½ï¿½ï¿½ï¿½ï¿½Sï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ */
 }
 
 void task_run(struct TASK *task)
 {
-	task->flags = 2; /* “®ì’†ƒ}[ƒN */
+	task->flags = 2; /* ï¿½ï¿½ï¿½ì’†ï¿½}ï¿½[ï¿½N */
 	taskctl->tasks[taskctl->running] = task;
 	taskctl->running++;
 	return;
@@ -80,30 +78,30 @@ void task_sleep(struct TASK *task)
 {
 	int i;
 	char ts = 0;
-	if (task->flags == 2) {		/* Žw’èƒ^ƒXƒN‚ª‚à‚µ‹N‚«‚Ä‚¢‚½‚ç */
+	if (task->flags == 2) {		/* ï¿½wï¿½ï¿½^ï¿½Xï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ */
 		if (task == taskctl->tasks[taskctl->now]) {
-			ts = 1; /* Ž©•ªŽ©g‚ðQ‚©‚¹‚é‚Ì‚ÅA‚ ‚Æ‚Åƒ^ƒXƒNƒXƒCƒbƒ`‚·‚é */
+			ts = 1; /* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ï¿½Qï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚ÅAï¿½ï¿½ï¿½Æ‚Åƒ^ï¿½Xï¿½Nï¿½Xï¿½Cï¿½bï¿½`ï¿½ï¿½ï¿½ï¿½ */
 		}
-		/* task‚ª‚Ç‚±‚É‚¢‚é‚©‚ð’T‚· */
+		/* taskï¿½ï¿½ï¿½Ç‚ï¿½ï¿½É‚ï¿½ï¿½é‚©ï¿½ï¿½Tï¿½ï¿½ */
 		for (i = 0; i < taskctl->running; i++) {
 			if (taskctl->tasks[i] == task) {
-				/* ‚±‚±‚É‚¢‚½ */
+				/* ï¿½ï¿½ï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½ */
 				break;
 			}
 		}
 		taskctl->running--;
 		if (i < taskctl->now) {
-			taskctl->now--; /* ‚¸‚ê‚é‚Ì‚ÅA‚±‚ê‚à‚ ‚í‚¹‚Ä‚¨‚­ */
+			taskctl->now--; /* ï¿½ï¿½ï¿½ï¿½ï¿½Ì‚ÅAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½í‚¹ï¿½Ä‚ï¿½ï¿½ï¿½ */
 		}
-		/* ‚¸‚ç‚µ */
+		/* ï¿½ï¿½ï¿½ç‚µ */
 		for (; i < taskctl->running; i++) {
 			taskctl->tasks[i] = taskctl->tasks[i + 1];
 		}
-		task->flags = 1; /* “®ì‚µ‚Ä‚¢‚È‚¢ó‘Ô */
+		task->flags = 1; /* ï¿½ï¿½ï¿½ì‚µï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ */
 		if (ts != 0) {
-			/* ƒ^ƒXƒNƒXƒCƒbƒ`‚·‚é */
+			/* ï¿½^ï¿½Xï¿½Nï¿½Xï¿½Cï¿½bï¿½`ï¿½ï¿½ï¿½ï¿½ */
 			if (taskctl->now >= taskctl->running) {
-				/* now‚ª‚¨‚©‚µ‚È’l‚É‚È‚Á‚Ä‚¢‚½‚çAC³‚·‚é */
+				/* nowï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È’lï¿½É‚È‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 				taskctl->now = 0;
 			}
 			farjmp(0, taskctl->tasks[taskctl->now]->sel);
