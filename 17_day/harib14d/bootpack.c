@@ -62,7 +62,7 @@ void HariMain(void)
 	/* sht_cons */
 	sht_cons = sheet_alloc(shtctl);
 	buf_cons = (unsigned char *) memman_alloc_4k(memman, 256 * 165);
-	sheet_setbuf(sht_cons, buf_cons, 256, 165, -1); /* �����F�Ȃ� */
+	sheet_setbuf(sht_cons, buf_cons, 256, 165, -1);
 	make_window8(buf_cons, 256, 165, "console", 0);
 	make_textbox8(sht_cons, 8, 28, 240, 128, COL8_000000);
 	task_cons = task_alloc();
@@ -118,10 +118,15 @@ void HariMain(void)
 		} else {
 			i = fifo32_get(&fifo);
 			io_sti();
+			// 键盘　鼠标　光标
 			if (256 <= i && i <= 511) {
-				sprintf(s, "%x", i - 256);
+				// sprintf(s, "%x", i - 256);
+				// 调试tab
+				sprintf(s, "%d", key_to);
 				putfonts8_asc_sht(sht_back, 0, 16, COL8_FFFFFF, COL8_008484, s, 2);
+				// 
 				if (i < 0x54 + 256 && keytable[i - 256] != 0) {
+					// 
 					if (key_to == 0) {
 						if (cursor_x < 128) {
 							s[0] = keytable[i - 256];
@@ -133,6 +138,7 @@ void HariMain(void)
 						fifo32_put(&task_cons->fifo, keytable[i - 256] + 256);
 					}
 				}
+				// 退格键
 				if (i == 256 + 0x0e) {
 					if (key_to == 0) {
 						if (cursor_x > 8) {
@@ -143,13 +149,14 @@ void HariMain(void)
 						fifo32_put(&task_cons->fifo, 8 + 256);
 					}
 				}
-				if (i == 256 + 0x0f) { /* Tab */
+				//　Tab
+				if (i == 256 + 0x0f) {
 					if (key_to == 0) {
 						key_to = 1;
 						make_wtitle8(buf_win,  sht_win->bxsize,  "task_a",  0);
 						make_wtitle8(buf_cons, sht_cons->bxsize, "console", 1);
 					} else {
-						key_to = 0;
+						// key_to = 0;
 						make_wtitle8(buf_win,  sht_win->bxsize,  "task_a",  1);
 						make_wtitle8(buf_cons, sht_cons->bxsize, "console", 0);
 					}
@@ -223,6 +230,9 @@ void make_window8(unsigned char *buf, int xsize, int ysize, char *title, char ac
 	return;
 }
 
+/**
+ * 绘制窗口头
+ */
 void make_wtitle8(unsigned char *buf, int xsize, char *title, char act)
 {
 	static char closebtn[14][16] = {
@@ -318,6 +328,7 @@ void console_task(struct SHEET *sheet)
 		} else {
 			i = fifo32_get(&task->fifo);
 			io_sti();
+			// 光标用定时器
 			if (i <= 1) {
 				if (i != 0) {
 					timer_init(timer, &task->fifo, 0);
@@ -328,7 +339,9 @@ void console_task(struct SHEET *sheet)
 				}
 				timer_settime(timer, 50);
 			}
+			// 键盘数据
 			if (256 <= i && i <= 511) {
+				// 退格键
 				if (i == 8 + 256) {
 					if (cursor_x > 16) {
 						putfonts8_asc_sht(sheet, cursor_x, 28, COL8_FFFFFF, COL8_000000, " ", 1);

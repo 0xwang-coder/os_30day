@@ -224,12 +224,12 @@ void HariMain(void)
 						sheet_slide(sht_win, mx - 80, my - 8);
 					}
 				}
-			} else if (i <= 1) { /* �J�[�\���p�^�C�} */
+			} else if (i <= 1) {
 				if (i != 0) {
-					timer_init(timer, &fifo, 0); /* ����0�� */
+					timer_init(timer, &fifo, 0);
 					cursor_c = COL8_000000;
 				} else {
-					timer_init(timer, &fifo, 1); /* ����1�� */
+					timer_init(timer, &fifo, 1);
 					cursor_c = COL8_FFFFFF;
 				}
 				timer_settime(timer, 50);
