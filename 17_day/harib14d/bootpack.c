@@ -80,7 +80,7 @@ void HariMain(void)
 	/* sht_win */
 	sht_win   = sheet_alloc(shtctl);
 	buf_win   = (unsigned char *) memman_alloc_4k(memman, 160 * 52);
-	sheet_setbuf(sht_win, buf_win, 144, 52, -1); /* �����F�Ȃ� */
+	sheet_setbuf(sht_win, buf_win, 144, 52, -1);
 	make_window8(buf_win, 144, 52, "task_a", 1);
 	make_textbox8(sht_win, 8, 28, 128, 16, COL8_FFFFFF);
 	cursor_x = 8;
@@ -120,11 +120,11 @@ void HariMain(void)
 			io_sti();
 			// 键盘　鼠标　光标
 			if (256 <= i && i <= 511) {
-				// sprintf(s, "%x", i - 256);
+				sprintf(s, "%x", i - 256);
 				// 调试tab
-				sprintf(s, "%d", key_to);
+				// sprintf(s, "%d", key_to);
 				putfonts8_asc_sht(sht_back, 0, 16, COL8_FFFFFF, COL8_008484, s, 2);
-				// 
+				// 普通字符
 				if (i < 0x54 + 256 && keytable[i - 256] != 0) {
 					// 
 					if (key_to == 0) {
@@ -160,7 +160,7 @@ void HariMain(void)
 						make_wtitle8(buf_win,  sht_win->bxsize,  "task_a",  1);
 						make_wtitle8(buf_cons, sht_cons->bxsize, "console", 0);
 					}
-					sheet_refresh(sht_win,  0, 0, sht_win->bxsize,  21);
+					sheet_refresh(sht_win,  0, 0, sht_witingn->bxsize,  21);
 					sheet_refresh(sht_cons, 0, 0, sht_cons->bxsize, 21);
 				}
 				boxfill8(sht_win->buf, sht_win->bxsize, cursor_c, cursor_x, 28, cursor_x + 7, 43);
