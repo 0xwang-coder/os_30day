@@ -1,13 +1,10 @@
-// mysprintf.c
-// http://bttb.s1.valueserver.jp/wordpress/blog/2017/12/17/makeos-5-2/
-
 #include <stdarg.h>
  
-//10進数からASCIIコードに変換
+// 10
 int dec2asc(char *str, int dec) {
     int len = 0, len_buf; //桁数
     int buf[10];
-    while (1) { //10で割れた回数（つまり桁数）をlenに、各桁をbufに格納
+    while (1) {
         buf[len++] = dec % 10;
         if (dec < 10) break;
         dec /= 10;
@@ -19,8 +16,8 @@ int dec2asc(char *str, int dec) {
     return len_buf;
 }
  
-//16進数からASCIIコードに変換
-int hex2asc(char *str, int dec) { //10で割れた回数（つまり桁数）をlenに、各桁をbufに格納
+// 16
+int hex2asc(char *str, int dec) {
     int len = 0, len_buf; //桁数
     int buf[10];
     while (1) {
@@ -39,7 +36,7 @@ int hex2asc(char *str, int dec) { //10で割れた回数（つまり桁数）を
 void sprintf(char *str, char *fmt, ...) {
     va_list list;
     int i, len;
-    va_start (list, 2);
+    va_start(list, fmt);
  
     while (*fmt) {
         if(*fmt=='%') {
@@ -57,6 +54,6 @@ void sprintf(char *str, char *fmt, ...) {
             *(str++) = *(fmt++);
         }   
     }
-    *str = 0x00; //最後にNULLを追加
-    va_end (list);
+    *str = 0x00;
+    va_end(list);
 }

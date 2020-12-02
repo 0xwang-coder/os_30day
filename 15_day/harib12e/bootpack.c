@@ -41,7 +41,7 @@ void HariMain(void)
 
 	init_gdtidt();
 	init_pic();
-	io_sti(); /* IDT/PIC�̏��������I������̂�CPU�̊��荞�݋֎~������ */
+	io_sti(); /* IDT/PIC */
 	fifo32_init(&fifo, 128, fifobuf);
 	init_pit();
 	init_keyboard(&fifo, 256);
@@ -84,7 +84,7 @@ void HariMain(void)
 	cursor_x = 8;
 	cursor_c = COL8_FFFFFF;
 	sheet_slide(sht_back, 0, 0);
-	mx = (binfo->scrnx - 16) / 2; /* ��ʒ����ɂȂ�悤�ɍ��W�v�Z */
+	mx = (binfo->scrnx - 16) / 2;
 	my = (binfo->scrny - 28 - 16) / 2;
 	sheet_slide(sht_mouse, mx, my);
 	sheet_slide(sht_win, 80, 72);
