@@ -39,7 +39,7 @@ int hex2asc(char *str, int dec) { //10で割れた回数（つまり桁数）を
 void sprintf(char *str, char *fmt, ...) {
     va_list list;
     int i, len;
-    va_start (list, 2);
+    va_start (list, fmt);
  
     while (*fmt) {
         if(*fmt=='%') {
