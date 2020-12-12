@@ -64,7 +64,7 @@ void sprintf(char *str, char *fmt, ...) {
 /**
  * 
  */
-void strcmp(const char * src, const char * dst)
+int strcmp(const char * src, const char * dst)
 {
     int ret = 0 ;
     while( !(ret = *(unsigned char *)src - *(unsigned char *)dst) && *dst) {
@@ -76,5 +76,5 @@ void strcmp(const char * src, const char * dst)
         ret = 1 ;
     }
         
-    return (ret);
+    return ret;
 }

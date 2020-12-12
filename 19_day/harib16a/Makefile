@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -c -m32 -nostdlib -fno-pic
+CFLAGS = -c -m32 -nostdlib -fno-pic -fno-builtin
 
 default :
 	make run
