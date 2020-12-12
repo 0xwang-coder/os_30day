@@ -39,7 +39,7 @@ int hex2asc(char *str, int dec) { //10で割れた回数（つまり桁数）を
 void sprintf(char *str, char *fmt, ...) {
     va_list list;
     int i, len;
-    va_start (list, fmt);
+    va_start (list, 2);
  
     while (*fmt) {
         if(*fmt=='%') {
@@ -59,4 +59,22 @@ void sprintf(char *str, char *fmt, ...) {
     }
     *str = 0x00; //最後にNULLを追加
     va_end (list);
+}
+
+/**
+ * 
+ */
+void strcmp(const char * src, const char * dst)
+{
+    int ret = 0 ;
+    while( !(ret = *(unsigned char *)src - *(unsigned char *)dst) && *dst) {
+        ++src, ++dst;  
+    }
+    if ( ret < 0 ){
+        ret = -1 ;
+    } else if ( ret > 0 ){
+        ret = 1 ;
+    }
+        
+    return (ret);
 }

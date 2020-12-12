@@ -4,7 +4,7 @@
 ;[INSTRSET "i486p"]
 
 VBEMODE	EQU		0x105			; 1024 x  768 x 8bit�J���[
-; 
+; �i��ʃ��[�h�ꗗ�j
 ;	0x100 :  640 x  400 x 8bit�J���[
 ;	0x101 :  640 x  480 x 8bit�J���[
 ;	0x103 :  800 x  600 x 8bit�J���[
@@ -15,7 +15,7 @@ BOTPAK	EQU		0x00280000		; bootpack�̃��[�h��
 DSKCAC	EQU		0x00100000		; �f�B�X�N�L���b�V���̏ꏊ
 DSKCAC0	EQU		0x00008000		; �f�B�X�N�L���b�V���̏ꏊ�i���A�����[�h�j
 
-; BOOT_INFO
+; BOOT_INFO�֌W
 CYLS	EQU		0x0ff0			; �u�[�g�Z�N�^���ݒ肷��
 LEDS	EQU		0x0ff1
 VMODE	EQU		0x0ff2			; �F���Ɋւ�����B���r�b�g�J���[���H
@@ -72,7 +72,7 @@ scrn320:
 	MOV		AL,0x13			; VGA�O���t�B�b�N�X�A320x200x8bit�J���[
 	MOV		AH,0x00
 	INT		0x10
-	MOV		BYTE [VMODE],8	; 
+	MOV		BYTE [VMODE],8	; ��ʃ��[�h����������iC���ꂪ�Q�Ƃ���j
 	MOV		WORD [SCRNX],320
 	MOV		WORD [SCRNY],200
 	MOV		DWORD [VRAM],0x000a0000
@@ -87,10 +87,10 @@ keystatus:
 ; PIC
 	MOV		AL,0xff
 	OUT		0x21,AL
-	NOP						; OUT
+	NOP						; OUT���߂�A��������Ƃ��܂������Ȃ��@�킪����炵���̂�
 	OUT		0xa1,AL
 
-	CLI						; 
+	CLI						; �����CPU���x���ł����荞�݋֎~
 
 ; CPU
 	CALL	waitkbdout
