@@ -14,7 +14,6 @@ section .text
 	global  load_cr0, store_cr0
 	global	asm_inthandler20, asm_inthandler21, asm_inthandler27, asm_inthandler2c
 	global  memtest_sub
-	global	taskswitch3, taskswitch4
 	EXTERN	inthandler20, inthandler21, inthandler27, inthandler2c
 
 io_hlt:	; void io_hlt(void);
@@ -201,13 +200,7 @@ mts_fin:
 load_tr:		; void load_tr(int tr);
 	LTR		[ESP+4]			; tr
 	RET
-taskswitch3:	; void taskswitch3(void);
-	JMP		3*8:0
-	RET
 
-taskswitch4:	; void taskswitch4(void);
-	JMP		4*8:0
-	RET
 farjmp:		; void farjmp(int eip, int cs);
 	JMP		FAR	[ESP+4]				; eip, cs
 	RET

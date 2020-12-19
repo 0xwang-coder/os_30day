@@ -1,5 +1,3 @@
-/* ÉRÉìÉ\Å[Éãä÷åW */
-
 #include "bootpack.h"
 #include <stdio.h>
 #include <string.h>
@@ -24,7 +22,7 @@ void console_task(struct SHEET *sheet, unsigned int memtotal)
 	timer_settime(timer, 50);
 	file_readfat(fat, (unsigned char *) (ADR_DISKIMG + 0x000200));
 
-	/* ÉvÉçÉìÉvÉgï\é¶ */
+	/* ÔøΩvÔøΩÔøΩÔøΩÔøΩÔøΩvÔøΩgÔøΩ\ÔøΩÔøΩ */
 	cons_putchar(&cons, '>', 1);
 
 	for (;;) {
@@ -35,54 +33,47 @@ void console_task(struct SHEET *sheet, unsigned int memtotal)
 		} else {
 			i = fifo32_get(&task->fifo);
 			io_sti();
-			if (i <= 1) { /* ÉJÅ[É\ÉãópÉ^ÉCÉ} */
+			if (i <= 1) { /* ÔøΩJÔøΩ[ÔøΩ\ÔøΩÔøΩÔøΩpÔøΩ^ÔøΩCÔøΩ} */
 				if (i != 0) {
-					timer_init(timer, &task->fifo, 0); /* éüÇÕ0Ç */
+					timer_init(timer, &task->fifo, 0); /* ÔøΩÔøΩÔøΩÔøΩ0ÔøΩÔøΩ */
 					if (cons.cur_c >= 0) {
 						cons.cur_c = COL8_FFFFFF;
 					}
 				} else {
-					timer_init(timer, &task->fifo, 1); /* éüÇÕ1Ç */
+					timer_init(timer, &task->fifo, 1); /* ÔøΩÔøΩÔøΩÔøΩ1ÔøΩÔøΩ */
 					if (cons.cur_c >= 0) {
 						cons.cur_c = COL8_000000;
 					}
 				}
 				timer_settime(timer, 50);
 			}
-			if (i == 2) {	/* ÉJÅ[É\ÉãON */
+			if (i == 2) {	/* ÔøΩJÔøΩ[ÔøΩ\ÔøΩÔøΩON */
 				cons.cur_c = COL8_FFFFFF;
 			}
-			if (i == 3) {	/* ÉJÅ[É\ÉãOFF */
+			if (i == 3) {	/* ÔøΩJÔøΩ[ÔøΩ\ÔøΩÔøΩOFF */
 				boxfill8(sheet->buf, sheet->bxsize, COL8_000000, cons.cur_x, cons.cur_y, cons.cur_x + 7, cons.cur_y + 15);
 				cons.cur_c = -1;
 			}
-			if (256 <= i && i <= 511) { /* ÉLÅ[É{Å[ÉhÉfÅ[É^ÅiÉ^ÉXÉNAåoóRÅj */
+			if (256 <= i && i <= 511) { /* ÔøΩLÔøΩ[ÔøΩ{ÔøΩ[ÔøΩhÔøΩfÔøΩ[ÔøΩ^ÔøΩiÔøΩ^ÔøΩXÔøΩNAÔøΩoÔøΩRÔøΩj */
 				if (i == 8 + 256) {
-					/* ÉoÉbÉNÉXÉyÅ[ÉX */
 					if (cons.cur_x > 16) {
-						/* ÉJÅ[É\ÉãÇÉXÉyÅ[ÉXÇ≈è¡ÇµÇƒÇ©ÇÁÅAÉJÅ[É\ÉãÇ1Ç¬ñﬂÇ∑ */
 						cons_putchar(&cons, ' ', 0);
 						cons.cur_x -= 8;
 					}
 				} else if (i == 10 + 256) {
 					/* Enter */
-					/* ÉJÅ[É\ÉãÇÉXÉyÅ[ÉXÇ≈è¡ÇµÇƒÇ©ÇÁâ¸çsÇ∑ÇÈ */
 					cons_putchar(&cons, ' ', 0);
 					cmdline[cons.cur_x / 8 - 2] = 0;
 					cons_newline(&cons);
-					cons_runcmd(cmdline, &cons, fat, memtotal);	/* ÉRÉ}ÉìÉhé¿çs */
-					/* ÉvÉçÉìÉvÉgï\é¶ */
+					cons_runcmd(cmdline, &cons, fat, memtotal);	/* ÔøΩRÔøΩ}ÔøΩÔøΩÔøΩhÔøΩÔøΩÔøΩs */
 					cons_putchar(&cons, '>', 1);
 				} else {
-					/* àÍî ï∂éö */
 					if (cons.cur_x < 240) {
-						/* àÍï∂éöï\é¶ÇµÇƒÇ©ÇÁÅAÉJÅ[É\ÉãÇ1Ç¬êiÇﬂÇÈ */
 						cmdline[cons.cur_x / 8 - 2] = i - 256;
 						cons_putchar(&cons, i - 256, 1);
 					}
 				}
 			}
-			/* ÉJÅ[É\Éãçƒï\é¶ */
 			if (cons.cur_c >= 0) {
 				boxfill8(sheet->buf, sheet->bxsize, cons.cur_c, cons.cur_x, cons.cur_y, cons.cur_x + 7, cons.cur_y + 15);
 			}
@@ -96,7 +87,7 @@ void cons_putchar(struct CONSOLE *cons, int chr, char move)
 	char s[2];
 	s[0] = chr;
 	s[1] = 0;
-	if (s[0] == 0x09) {	/* É^Éu */
+	if (s[0] == 0x09) {	/* ÔøΩ^ÔøΩu */
 		for (;;) {
 			putfonts8_asc_sht(cons->sht, cons->cur_x, cons->cur_y, COL8_FFFFFF, COL8_000000, " ", 1);
 			cons->cur_x += 8;
@@ -104,17 +95,16 @@ void cons_putchar(struct CONSOLE *cons, int chr, char move)
 				cons_newline(cons);
 			}
 			if (((cons->cur_x - 8) & 0x1f) == 0) {
-				break;	/* 32Ç≈äÑÇËêÿÇÍÇΩÇÁbreak */
+				break;	/* 32ÔøΩ≈äÔøΩÔøΩÔøΩÿÇÍÇΩÔøΩÔøΩbreak */
 			}
 		}
-	} else if (s[0] == 0x0a) {	/* â¸çs */
+	} else if (s[0] == 0x0a) {	/* ÔøΩÔøΩÔøΩs */
 		cons_newline(cons);
-	} else if (s[0] == 0x0d) {	/* ïúãA */
-		/* Ç∆ÇËÇ†Ç¶Ç∏Ç»Ç…Ç‡ÇµÇ»Ç¢ */
-	} else {	/* ïÅí ÇÃï∂éö */
+	} else if (s[0] == 0x0d) {	/* ÔøΩÔøΩÔøΩA */
+
+	} else {	/* ÔøΩÔøΩÔøΩ ÇÃïÔøΩÔøΩÔøΩ */
 		putfonts8_asc_sht(cons->sht, cons->cur_x, cons->cur_y, COL8_FFFFFF, COL8_000000, s, 1);
 		if (move != 0) {
-			/* moveÇ™0ÇÃÇ∆Ç´ÇÕÉJÅ[É\ÉãÇêiÇﬂÇ»Ç¢ */
 			cons->cur_x += 8;
 			if (cons->cur_x == 8 + 240) {
 				cons_newline(cons);
@@ -129,9 +119,8 @@ void cons_newline(struct CONSOLE *cons)
 	int x, y;
 	struct SHEET *sheet = cons->sht;
 	if (cons->cur_y < 28 + 112) {
-		cons->cur_y += 16; /* éüÇÃçsÇ÷ */
+		cons->cur_y += 16; /* ÔøΩÔøΩÔøΩÃçsÔøΩÔøΩ */
 	} else {
-		/* ÉXÉNÉçÅ[Éã */
 		for (y = 28; y < 28 + 112; y++) {
 			for (x = 8; x < 8 + 240; x++) {
 				sheet->buf[x + y * sheet->bxsize] = sheet->buf[x + (y + 16) * sheet->bxsize];
@@ -161,7 +150,6 @@ void cons_runcmd(char *cmdline, struct CONSOLE *cons, int *fat, unsigned int mem
 	} else if (strcmp(cmdline, "hlt") == 0) {
 		cmd_hlt(cons, fat);
 	} else if (cmdline[0] != 0) {
-		/* ÉRÉ}ÉìÉhÇ≈ÇÕÇ»Ç≠ÅAÇ≥ÇÁÇ…ãÛçsÇ≈Ç‡Ç»Ç¢ */
 		putfonts8_asc_sht(cons->sht, 8, cons->cur_y, COL8_FFFFFF, COL8_000000, "Bad command.", 12);
 		cons_newline(cons);
 		cons_newline(cons);
@@ -208,7 +196,7 @@ void cmd_dir(struct CONSOLE *cons)
 		}
 		if (finfo[i].name[0] != 0xe5) {
 			if ((finfo[i].type & 0x18) == 0) {
-				sprintf(s, "filename.ext   %7d", finfo[i].size);
+				sprintf(s, "filename.ext   %d", finfo[i].size);
 				for (j = 0; j < 8; j++) {
 					s[j] = finfo[i].name[j];
 				}
@@ -231,7 +219,6 @@ void cmd_type(struct CONSOLE *cons, int *fat, char *cmdline)
 	char *p;
 	int i;
 	if (finfo != 0) {
-		/* ÉtÉ@ÉCÉãÇ™å©Ç¬Ç©Ç¡ÇΩèÍçá */
 		p = (char *) memman_alloc_4k(memman, finfo->size);
 		file_loadfile(finfo->clustno, finfo->size, p, fat, (char *) (ADR_DISKIMG + 0x003e00));
 		for (i = 0; i < finfo->size; i++) {
@@ -239,7 +226,6 @@ void cmd_type(struct CONSOLE *cons, int *fat, char *cmdline)
 		}
 		memman_free_4k(memman, (int) p, finfo->size);
 	} else {
-		/* ÉtÉ@ÉCÉãÇ™å©Ç¬Ç©ÇÁÇ»Ç©Ç¡ÇΩèÍçá */
 		putfonts8_asc_sht(cons->sht, 8, cons->cur_y, COL8_FFFFFF, COL8_000000, "File not found.", 15);
 		cons_newline(cons);
 	}
@@ -254,14 +240,12 @@ void cmd_hlt(struct CONSOLE *cons, int *fat)
 	struct SEGMENT_DESCRIPTOR *gdt = (struct SEGMENT_DESCRIPTOR *) ADR_GDT;
 	char *p;
 	if (finfo != 0) {
-		/* ÉtÉ@ÉCÉãÇ™å©Ç¬Ç©Ç¡ÇΩèÍçá */
 		p = (char *) memman_alloc_4k(memman, finfo->size);
 		file_loadfile(finfo->clustno, finfo->size, p, fat, (char *) (ADR_DISKIMG + 0x003e00));
 		set_segmdesc(gdt + 1003, finfo->size - 1, (int) p, AR_CODE32_ER);
 		farcall(0, 1003 * 8);
 		memman_free_4k(memman, (int) p, finfo->size);
 	} else {
-		/* ÉtÉ@ÉCÉãÇ™å©Ç¬Ç©ÇÁÇ»Ç©Ç¡ÇΩèÍçá */
 		putfonts8_asc_sht(cons->sht, 8, cons->cur_y, COL8_FFFFFF, COL8_000000, "File not found.", 15);
 		cons_newline(cons);
 	}

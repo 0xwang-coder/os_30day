@@ -1,9 +1,6 @@
-/* ƒtƒ@ƒCƒ‹ŠÖŒW */
-
 #include "bootpack.h"
 
 void file_readfat(int *fat, unsigned char *img)
-/* ƒfƒBƒXƒNƒCƒ[ƒW“à‚ÌFAT‚Ìˆ³k‚ğ‚Æ‚­ */
 {
 	int i, j = 0;
 	for (i = 0; i < 2880; i += 2) {
@@ -14,6 +11,9 @@ void file_readfat(int *fat, unsigned char *img)
 	return;
 }
 
+/**
+ * load file from img disk
+ */
 void file_loadfile(int clustno, int size, char *buf, int *fat, char *img)
 {
 	int i;
@@ -43,13 +43,13 @@ struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max)
 	}
 	j = 0;
 	for (i = 0; name[i] != 0; i++) {
-		if (j >= 11) { return 0; /* Œ©‚Â‚©‚ç‚È‚©‚Á‚½ */ }
+		if (j >= 11) { return 0; /* ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½ï¿½ */ }
 		if (name[i] == '.' && j <= 8) {
 			j = 8;
 		} else {
 			s[j] = name[i];
 			if ('a' <= s[j] && s[j] <= 'z') {
-				/* ¬•¶š‚Í‘å•¶š‚É’¼‚· */
+				/* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í‘å•¶ï¿½ï¿½ï¿½É’ï¿½ï¿½ï¿½ */
 				s[j] -= 0x20;
 			} 
 			j++;
@@ -65,10 +65,10 @@ struct FILEINFO *file_search(char *name, struct FILEINFO *finfo, int max)
 					goto next;
 				}
 			}
-			return finfo + i; /* ƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚Á‚½ */
+			return finfo + i;
 		}
 next:
 		i++;
 	}
-	return 0; /* Œ©‚Â‚©‚ç‚È‚©‚Á‚½ */
+	return 0;
 }

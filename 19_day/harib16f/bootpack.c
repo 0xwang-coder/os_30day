@@ -11,6 +11,7 @@ void HariMain(void)
 	struct FIFO32 fifo, keycmd;
 	int fifobuf[128], keycmd_buf[32];
 	int mx, my, i, cursor_x, cursor_c;
+
 	unsigned int memtotal;
 	struct MOUSE_DEC mdec;
 	struct MEMMAN *memman = (struct MEMMAN *) MEMMAN_ADDR;
@@ -229,9 +230,8 @@ void HariMain(void)
 					boxfill8(sht_win->buf, sht_win->bxsize, cursor_c, cursor_x, 28, cursor_x + 7, 43);
 				}
 				sheet_refresh(sht_win, cursor_x, 28, cursor_x + 8, 44);
-			} else if (512 <= i && i <= 767) { /* �}�E�X�f�[�^ */
+			} else if (512 <= i && i <= 767) {
 				if (mouse_decode(&mdec, i - 512) != 0) {
-					/* �}�E�X�J�[�\���̈ړ� */
 					mx += mdec.x;
 					my += mdec.y;
 					if (mx < 0) {
