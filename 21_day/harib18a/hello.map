@@ -1,0 +1,23 @@
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+
+.text           0x0000000000000000       0x1f
+ *(.text)
+ .text          0x0000000000000000       0x1f hello.o
+
+.data
+ *(.data)
+ *(.rodata*)
+ *(.bss)
+
+/DISCARD/
+ *(.eh_frame)
+ *(.note.gnu.property)
+LOAD hello.o
+OUTPUT(hello.hrb binary)
