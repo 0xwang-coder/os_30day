@@ -124,7 +124,7 @@ asm_inthandler20:
 	POP		DS
 	POP		ES
 	IRETD
-	.from_app:
+.from_app:
 	MOV		EAX,1*8
 	MOV		DS,AX			; DS OS
 	MOV		ECX,[0xfe4]		; OS ESP
