@@ -1,126 +1,87 @@
-OBJS_BOOTPACK = bootpack.obj naskfunc.obj hankaku.obj graphic.obj dsctbl.obj \
-		int.obj fifo.obj keyboard.obj mouse.obj memory.obj sheet.obj timer.obj \
-		mtask.obj window.obj console.obj file.obj
-
-TOOLPATH = ../z_tools/
-INCPATH  = ../z_tools/haribote/
-
-MAKE     = $(TOOLPATH)make.exe -r
-NASK     = $(TOOLPATH)nask.exe
-CC1      = $(TOOLPATH)cc1.exe -I$(INCPATH) -Os -Wall -quiet
-GAS2NASK = $(TOOLPATH)gas2nask.exe -a
-OBJ2BIM  = $(TOOLPATH)obj2bim.exe
-MAKEFONT = $(TOOLPATH)makefont.exe
-BIN2OBJ  = $(TOOLPATH)bin2obj.exe
-BIM2HRB  = $(TOOLPATH)bim2hrb.exe
-RULEFILE = $(TOOLPATH)haribote/haribote.rul
-EDIMG    = $(TOOLPATH)edimg.exe
-IMGTOL   = $(TOOLPATH)imgtol.com
-COPY     = copy
-DEL      = del
-
-# デフォルト動作
+CC = gcc
+CFLAGS = -c -m32 -nostdlib -fno-pic -fno-builtin -g
 
 default :
-	$(MAKE) img
+	make run
 
-# ファイル生成規則
+#--------------------
+#	hankaku char
+#--------------------
+convHankakuTxt : convHankakuTxt.c
+	$(CC) $< -o $@
 
-ipl10.bin : ipl10.nas Makefile
-	$(NASK) ipl10.nas ipl10.bin ipl10.lst
+hankaku.c : hankaku.txt convHankakuTxt
+	./convHankakuTxt
 
-asmhead.bin : asmhead.nas Makefile
-	$(NASK) asmhead.nas asmhead.bin asmhead.lst
+#--------------------
+# os boot loader
+#--------------------
+ipl.bin : ipl.asm
+	nasm $< -o $@ -l ipl.lst
 
-hankaku.bin : hankaku.txt Makefile
-	$(MAKEFONT) hankaku.txt hankaku.bin
+asmhead.bin : asmhead.asm
+	nasm $< -o $@ -l asmhead.lst
 
-hankaku.obj : hankaku.bin Makefile
-	$(BIN2OBJ) hankaku.bin hankaku.obj _hankaku
+nasmfunc.o : nasmfunc.asm
+	nasm -f elf $< -o $@ -l nasmfunc.lst
 
-bootpack.bim : $(OBJS_BOOTPACK) Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:bootpack.bim stack:3136k map:bootpack.map \
-		$(OBJS_BOOTPACK)
-# 3MB+64KB=3136KB
+#--------------------
+# os system 
+#--------------------
+%.o : %.c
+	$(CC) $(CFLAGS) $*.c -o $*.o
 
-bootpack.hrb : bootpack.bim Makefile
-	$(BIM2HRB) bootpack.bim bootpack.hrb 0
+#--------------------
+# exec
+#--------------------
+hello.o : hello.asm
+	nasm -f elf $< -o $@ -l hello.lst
+hello.hrb: hello.o Makefile
+	ld -m elf_i386 -T hello.ld hello.o -o hello.hrb -M=hello.map
+crack1.hrb: crack1.o Makefile
+	ld -m elf_i386 -T crack1.ld crack1.o -o crack1.hrb -M=crack1.map
+
+#OBJS_BOOTPACK = bootpack.c nasmfunc.o hankaku.o mysprintf.o graphic.o dsctbl.o
+#bootpack.hrb : $(OBJS_BOOTPACK) har.ld
+#	$(CC) -m32 -march=i486 -nostdlib -nostdinc -T har.ld $(OBJS_BOOTPACK) -o $@
+OBJS_BOOTPACK = bootpack.o nasmfunc.o hankaku.o fifo.o int.o keyboard.o \
+	mouse.o memory.o mysprintf.o graphic.o dsctbl.o sheet.o timer.o \
+	mtask.o console.o window.o file.o 
+bootpack.hrb : $(OBJS_BOOTPACK) hello.hrb crack1.hrb Makefile
+	ld -m elf_i386 -T har.ld $(OBJS_BOOTPACK) -o $@ -M=bootpack.map
 
 haribote.sys : asmhead.bin bootpack.hrb Makefile
-	copy /B asmhead.bin+bootpack.hrb haribote.sys
+	cat asmhead.bin bootpack.hrb > haribote.sys
 
-hello.hrb : hello.nas Makefile
-	$(NASK) hello.nas hello.hrb hello.lst
+haribote.img : ipl.bin haribote.sys Makefile
+	mformat -f 1440 -C -B ipl.bin -i haribote.img ::
+	mcopy haribote.sys -i haribote.img ::
+	mcopy ipl.asm -i haribote.img ::
+	mcopy make.bat -i haribote.img ::
+	mcopy hello.hrb -i haribote.img ::
+	mcopy crack1.hrb -i haribote.img ::
 
-hello2.hrb : hello2.nas Makefile
-	$(NASK) hello2.nas hello2.hrb hello2.lst
-
-a.bim : a.obj a_nask.obj Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:a.bim map:a.map a.obj a_nask.obj
-
-a.hrb : a.bim Makefile
-	$(BIM2HRB) a.bim a.hrb 0
-
-hello3.bim : hello3.obj a_nask.obj Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:hello3.bim map:hello3.map hello3.obj a_nask.obj
-
-hello3.hrb : hello3.bim Makefile
-	$(BIM2HRB) hello3.bim hello3.hrb 0
-
-crack1.bim : crack1.obj Makefile
-	$(OBJ2BIM) @$(RULEFILE) out:crack1.bim map:crack1.map crack1.obj
-
-crack1.hrb : crack1.bim Makefile
-	$(BIM2HRB) crack1.bim crack1.hrb 0
-
-haribote.img : ipl10.bin haribote.sys Makefile \
-		hello.hrb hello2.hrb a.hrb hello3.hrb crack1.hrb
-	$(EDIMG)   imgin:../z_tools/fdimg0at.tek \
-		wbinimg src:ipl10.bin len:512 from:0 to:0 \
-		copy from:haribote.sys to:@: \
-		copy from:ipl10.nas to:@: \
-		copy from:make.bat to:@: \
-		copy from:hello.hrb to:@: \
-		copy from:hello2.hrb to:@: \
-		copy from:a.hrb to:@: \
-		copy from:hello3.hrb to:@: \
-		copy from:crack1.hrb to:@: \
-		imgout:haribote.img
-
-# 一般規則
-
-%.gas : %.c bootpack.h Makefile
-	$(CC1) -o $*.gas $*.c
-
-%.nas : %.gas Makefile
-	$(GAS2NASK) $*.gas $*.nas
-
-%.obj : %.nas Makefile
-	$(NASK) $*.nas $*.obj $*.lst
-
-# コマンド
-
+#--------------------
+#  debug -gdb tcp::10000
+#--------------------
 img :
-	$(MAKE) haribote.img
+	make haribote.img
 
 run :
-	$(MAKE) img
-	$(COPY) haribote.img ..\z_tools\qemu\fdimage0.bin
-	$(MAKE) -C ../z_tools/qemu
+	make img
+	qemu-system-i386 -fda haribote.img -monitor stdio -show-cursor
 
-install :
-	$(MAKE) img
-	$(IMGTOL) w a: haribote.img
+debug:
+	make img
+	qemu-system-i386 -S -fda haribote.img -gdb tcp::10000 -monitor stdio -show-cursor
 
 clean :
-	-$(DEL) *.bin
-	-$(DEL) *.lst
-	-$(DEL) *.obj
-	-$(DEL) *.map
-	-$(DEL) *.bim
-	-$(DEL) *.hrb
-	-$(DEL) haribote.sys
+	rm *.o
+	rm *.lst
+	rm *.bin
+	rm *.hrb
+	rm *.sys
 
 src_only :
-	$(MAKE) clean
-	-$(DEL) haribote.img
+	rm haribote.img
+	make clean

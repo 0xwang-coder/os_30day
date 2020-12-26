@@ -1,0 +1,67 @@
+
+Discarded input sections
+
+ .note.gnu.property
+                0x0000000000000000       0x1c crack1.o
+ .eh_frame      0x0000000000000000       0x38 crack1.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+
+.head           0x0000000000000000       0x24
+                0x0000000000000000        0x4 LONG 0x10000
+                0x0000000000000004        0x4 LONG 0x69726148
+                0x0000000000000008        0x4 LONG 0x0
+                0x000000000000000c        0x4 LONG 0x310000
+                0x0000000000000010        0x4 LONG 0x0 SIZEOF (.data)
+                0x0000000000000014        0x4 LONG 0x36 LOADADDR (.data)
+                0x0000000000000018        0x4 LONG 0xe9000000
+                0x000000000000001c        0x4 LONG 0x4 (HariMain - 0x20)
+                0x0000000000000020        0x4 LONG 0x0
+
+.text           0x0000000000000024       0x12
+ *(.text)
+ .text          0x0000000000000024       0x12 crack1.o
+                0x0000000000000024                HariMain
+
+.data           0x0000000000310000        0x0 load address 0x0000000000000036
+ *(.data)
+ .data          0x0000000000310000        0x0 crack1.o
+ *(.rodata*)
+ *(.bss)
+ .bss           0x0000000000310000        0x0 crack1.o
+
+/DISCARD/
+ *(.eh_frame)
+ *(.note.gnu.property)
+LOAD crack1.o
+OUTPUT(crack1.hrb binary)
+
+.debug_info     0x0000000000000000       0x38
+ .debug_info    0x0000000000000000       0x38 crack1.o
+
+.debug_abbrev   0x0000000000000000       0x2e
+ .debug_abbrev  0x0000000000000000       0x2e crack1.o
+
+.debug_aranges  0x0000000000000000       0x20
+ .debug_aranges
+                0x0000000000000000       0x20 crack1.o
+
+.debug_line     0x0000000000000000       0x44
+ .debug_line    0x0000000000000000       0x44 crack1.o
+
+.debug_str      0x0000000000000000       0xc6
+ .debug_str     0x0000000000000000       0xc6 crack1.o
+
+.comment        0x0000000000000000       0x2b
+ .comment       0x0000000000000000       0x2b crack1.o
+
+.note.GNU-stack
+                0x0000000000000000        0x0
+ .note.GNU-stack
+                0x0000000000000000        0x0 crack1.o
