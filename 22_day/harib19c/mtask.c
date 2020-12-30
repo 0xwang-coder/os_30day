@@ -1,5 +1,3 @@
-/* ƒ}ƒ‹ƒ`ƒ^ƒXƒNŠÖŒW */
-
 #include "bootpack.h"
 
 struct TASKCTL *taskctl;
@@ -16,7 +14,7 @@ void task_add(struct TASK *task)
 	struct TASKLEVEL *tl = &taskctl->level[task->level];
 	tl->tasks[tl->running] = task;
 	tl->running++;
-	task->flags = 2; /* “®ì’† */
+	task->flags = 2;
 	return;
 }
 
@@ -25,25 +23,22 @@ void task_remove(struct TASK *task)
 	int i;
 	struct TASKLEVEL *tl = &taskctl->level[task->level];
 
-	/* task‚ª‚Ç‚±‚É‚¢‚é‚©‚ğ’T‚· */
+	/* task */
 	for (i = 0; i < tl->running; i++) {
 		if (tl->tasks[i] == task) {
-			/* ‚±‚±‚É‚¢‚½ */
 			break;
 		}
 	}
 
 	tl->running--;
 	if (i < tl->now) {
-		tl->now--; /* ‚¸‚ê‚é‚Ì‚ÅA‚±‚ê‚à‚ ‚í‚¹‚Ä‚¨‚­ */
+		tl->now--;
 	}
 	if (tl->now >= tl->running) {
-		/* now‚ª‚¨‚©‚µ‚È’l‚É‚È‚Á‚Ä‚¢‚½‚çAC³‚·‚é */
 		tl->now = 0;
 	}
-	task->flags = 1; /* ƒXƒŠ[ƒv’† */
+	task->flags = 1;
 
-	/* ‚¸‚ç‚µ */
 	for (; i < tl->running; i++) {
 		tl->tasks[i] = tl->tasks[i + 1];
 	}
@@ -54,10 +49,9 @@ void task_remove(struct TASK *task)
 void task_switchsub(void)
 {
 	int i;
-	/* ˆê”Ôã‚ÌƒŒƒxƒ‹‚ğ’T‚· */
 	for (i = 0; i < MAX_TASKLEVELS; i++) {
 		if (taskctl->level[i].running > 0) {
-			break; /* Œ©‚Â‚©‚Á‚½ */
+			break;
 		}
 	}
 	taskctl->now_lv = i;
@@ -90,11 +84,11 @@ struct TASK *task_init(struct MEMMAN *memman)
 	}
 
 	task = task_alloc();
-	task->flags = 2;	/* “®ì’†ƒ}[ƒN */
-	task->priority = 2; /* 0.02•b */
-	task->level = 0;	/* Å‚ƒŒƒxƒ‹ */
+	task->flags = 2;	/* ï¿½ï¿½ï¿½ì’†ï¿½}ï¿½[ï¿½N */
+	task->priority = 2; /* 0.02ï¿½b */
+	task->level = 0;	/* ï¿½Åï¿½ï¿½ï¿½ï¿½xï¿½ï¿½ */
 	task_add(task);
-	task_switchsub();	/* ƒŒƒxƒ‹İ’è */
+	task_switchsub();	/* ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½İ’ï¿½ */
 	load_tr(task->sel);
 	task_timer = timer_alloc();
 	timer_settime(task_timer, task->priority);
@@ -120,9 +114,9 @@ struct TASK *task_alloc(void)
 	for (i = 0; i < MAX_TASKS; i++) {
 		if (taskctl->tasks0[i].flags == 0) {
 			task = &taskctl->tasks0[i];
-			task->flags = 1; /* g—p’†ƒ}[ƒN */
+			task->flags = 1;
 			task->tss.eflags = 0x00000202; /* IF = 1; */
-			task->tss.eax = 0; /* ‚Æ‚è‚ ‚¦‚¸0‚É‚µ‚Ä‚¨‚­‚±‚Æ‚É‚·‚é */
+			task->tss.eax = 0;
 			task->tss.ecx = 0;
 			task->tss.edx = 0;
 			task->tss.ebx = 0;
@@ -139,28 +133,27 @@ struct TASK *task_alloc(void)
 			return task;
 		}
 	}
-	return 0; /* ‚à‚¤‘S•”g—p’† */
+	return 0;
 }
 
 void task_run(struct TASK *task, int level, int priority)
 {
 	if (level < 0) {
-		level = task->level; /* ƒŒƒxƒ‹‚ğ•ÏX‚µ‚È‚¢ */
+		level = task->level;
 	}
 	if (priority > 0) {
 		task->priority = priority;
 	}
 
-	if (task->flags == 2 && task->level != level) { /* “®ì’†‚ÌƒŒƒxƒ‹‚Ì•ÏX */
-		task_remove(task); /* ‚±‚ê‚ğÀs‚·‚é‚Æflags‚Í1‚É‚È‚é‚Ì‚Å‰º‚Ìif‚àÀs‚³‚ê‚é */
+	if (task->flags == 2 && task->level != level) {
+		task_remove(task);
 	}
 	if (task->flags != 2) {
-		/* ƒXƒŠ[ƒv‚©‚ç‹N‚±‚³‚ê‚éê‡ */
 		task->level = level;
 		task_add(task);
 	}
 
-	taskctl->lv_change = 1; /* Ÿ‰ñƒ^ƒXƒNƒXƒCƒbƒ`‚Ì‚Æ‚«‚ÉƒŒƒxƒ‹‚ğŒ©’¼‚· */
+	taskctl->lv_change = 1;
 	return;
 }
 
@@ -168,13 +161,11 @@ void task_sleep(struct TASK *task)
 {
 	struct TASK *now_task;
 	if (task->flags == 2) {
-		/* “®ì’†‚¾‚Á‚½‚ç */
 		now_task = task_now();
-		task_remove(task); /* ‚±‚ê‚ğÀs‚·‚é‚Æflags‚Í1‚É‚È‚é */
+		task_remove(task);
 		if (task == now_task) {
-			/* ©•ª©g‚ÌƒXƒŠ[ƒv‚¾‚Á‚½‚Ì‚ÅAƒ^ƒXƒNƒXƒCƒbƒ`‚ª•K—v */
 			task_switchsub();
-			now_task = task_now(); /* İ’èŒã‚Å‚ÌAuŒ»İ‚Ìƒ^ƒXƒNv‚ğ‹³‚¦‚Ä‚à‚ç‚¤ */
+			now_task = task_now();
 			farjmp(0, now_task->sel);
 		}
 	}
