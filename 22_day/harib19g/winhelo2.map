@@ -1,0 +1,85 @@
+
+Allocating common symbols
+Common symbol       size              file
+
+buf                 0x1d4c            winhelo2.o
+
+Discarded input sections
+
+ .note.gnu.property
+                0x0000000000000000       0x1c winhelo2.o
+ .eh_frame      0x0000000000000000       0x38 winhelo2.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+
+.head           0x0000000000000000       0x24
+                0x0000000000000000        0x4 LONG 0x10000
+                0x0000000000000004        0x4 LONG 0x69726148
+                0x0000000000000008        0x4 LONG 0x0
+                0x000000000000000c        0x4 LONG 0x310000
+                0x0000000000000010        0x4 LONG 0x13 SIZEOF (.data)
+                0x0000000000000014        0x4 LONG 0x12c LOADADDR (.data)
+                0x0000000000000018        0x4 LONG 0xe9000000
+                0x000000000000001c        0x4 LONG 0xa3 (HariMain - 0x20)
+                0x0000000000000020        0x4 LONG 0x0
+
+.text           0x0000000000000030       0xfc
+ *(.text)
+ .text          0x0000000000000030       0x93 a_nask.o
+                0x0000000000000030                api_putchar
+                0x000000000000003c                api_putstr0
+                0x000000000000004a                api_end
+                0x0000000000000051                api_openwin
+                0x0000000000000073                api_putstrwin
+                0x000000000000009b                api_boxfilwin
+ .text          0x00000000000000c3       0x69 winhelo2.o
+                0x00000000000000c3                HariMain
+
+.data           0x0000000000310000       0x13 load address 0x000000000000012c
+ *(.data)
+ .data          0x0000000000310000        0x0 winhelo2.o
+ *(.rodata*)
+ .rodata        0x0000000000310000       0x13 winhelo2.o
+ *(.bss)
+ .bss           0x0000000000310013        0x0 winhelo2.o
+
+/DISCARD/
+ *(.eh_frame)
+ *(.note.gnu.property)
+LOAD a_nask.o
+LOAD winhelo2.o
+OUTPUT(winhelo2.hrb binary)
+
+.debug_info     0x0000000000000000       0x84
+ .debug_info    0x0000000000000000       0x84 winhelo2.o
+
+.debug_abbrev   0x0000000000000000       0x7c
+ .debug_abbrev  0x0000000000000000       0x7c winhelo2.o
+
+.debug_aranges  0x0000000000000000       0x20
+ .debug_aranges
+                0x0000000000000000       0x20 winhelo2.o
+
+.debug_line     0x0000000000000000       0x48
+ .debug_line    0x0000000000000000       0x48 winhelo2.o
+
+.debug_str      0x0000000000000000       0xda
+ .debug_str     0x0000000000000000       0xda winhelo2.o
+
+.comment        0x0000000000000000       0x2b
+ .comment       0x0000000000000000       0x2b winhelo2.o
+
+.note.GNU-stack
+                0x0000000000000000        0x0
+ .note.GNU-stack
+                0x0000000000000000        0x0 winhelo2.o
+
+.bss            0x0000000000310020     0x1d4c load address 0x0000000000000160
+ COMMON         0x0000000000310020     0x1d4c winhelo2.o
+                0x0000000000310020                buf
