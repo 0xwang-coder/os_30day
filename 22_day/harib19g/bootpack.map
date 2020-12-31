@@ -73,7 +73,7 @@ Linker script and memory map
                 0x0000000000000004        0x4 LONG 0x69726148
                 0x0000000000000008        0x4 LONG 0x0
                 0x000000000000000c        0x4 LONG 0x310000
-                0x0000000000000010        0x4 LONG 0x1411 SIZEOF (.data)
+                0x0000000000000010        0x4 LONG 0x141b SIZEOF (.data)
                 0x0000000000000014        0x4 LONG 0x4dd0 LOADADDR (.data)
                 0x0000000000000018        0x4 LONG 0xe9000000
                 0x000000000000001c        0x4 LONG 0x10 (HariMain - 0x20)
@@ -211,7 +211,7 @@ Linker script and memory map
                 0x0000000000004bae                file_loadfile
                 0x0000000000004c5a                file_search
 
-.data           0x0000000000310000     0x1411 load address 0x0000000000004dd0
+.data           0x0000000000310000     0x141b load address 0x0000000000004dd0
  *(.data)
  .data          0x0000000000310000      0x100 bootpack.o
  .data          0x0000000000310100        0x0 nasmfunc.o
@@ -233,24 +233,24 @@ Linker script and memory map
  .data          0x0000000000311320        0x0 file.o
  *(.rodata*)
  .rodata        0x0000000000311320       0x20 bootpack.o
- .rodata        0x0000000000311340       0xd1 console.o
+ .rodata        0x0000000000311340       0xdb console.o
  *(.bss)
- .bss           0x0000000000311411        0x0 bootpack.o
- .bss           0x0000000000311411        0x0 hankaku.o
- .bss           0x0000000000311411        0x0 fifo.o
- .bss           0x0000000000311411        0x0 int.o
- .bss           0x0000000000311411        0x0 keyboard.o
- .bss           0x0000000000311411        0x0 mouse.o
- .bss           0x0000000000311411        0x0 memory.o
- .bss           0x0000000000311411        0x0 mysprintf.o
- .bss           0x0000000000311411        0x0 graphic.o
- .bss           0x0000000000311411        0x0 dsctbl.o
- .bss           0x0000000000311411        0x0 sheet.o
- .bss           0x0000000000311411        0x0 timer.o
- .bss           0x0000000000311411        0x0 mtask.o
- .bss           0x0000000000311411        0x0 console.o
- .bss           0x0000000000311411        0x0 window.o
- .bss           0x0000000000311411        0x0 file.o
+ .bss           0x000000000031141b        0x0 bootpack.o
+ .bss           0x000000000031141b        0x0 hankaku.o
+ .bss           0x000000000031141b        0x0 fifo.o
+ .bss           0x000000000031141b        0x0 int.o
+ .bss           0x000000000031141b        0x0 keyboard.o
+ .bss           0x000000000031141b        0x0 mouse.o
+ .bss           0x000000000031141b        0x0 memory.o
+ .bss           0x000000000031141b        0x0 mysprintf.o
+ .bss           0x000000000031141b        0x0 graphic.o
+ .bss           0x000000000031141b        0x0 dsctbl.o
+ .bss           0x000000000031141b        0x0 sheet.o
+ .bss           0x000000000031141b        0x0 timer.o
+ .bss           0x000000000031141b        0x0 mtask.o
+ .bss           0x000000000031141b        0x0 console.o
+ .bss           0x000000000031141b        0x0 window.o
+ .bss           0x000000000031141b        0x0 file.o
 
 /DISCARD/
  *(.eh_frame)
@@ -274,7 +274,7 @@ LOAD window.o
 LOAD file.o
 OUTPUT(bootpack.hrb binary)
 
-.debug_info     0x0000000000000000     0x62ac
+.debug_info     0x0000000000000000     0x62a0
  .debug_info    0x0000000000000000      0xafc bootpack.o
  .debug_info    0x0000000000000afc       0x4f hankaku.o
  .debug_info    0x0000000000000b4b      0x428 fifo.o
@@ -288,9 +288,9 @@ OUTPUT(bootpack.hrb binary)
  .debug_info    0x00000000000031b8      0x9e3 sheet.o
  .debug_info    0x0000000000003b9b      0x4a9 timer.o
  .debug_info    0x0000000000004044      0x72e mtask.o
- .debug_info    0x0000000000004772      0xf7c console.o
- .debug_info    0x00000000000056ee      0x67b window.o
- .debug_info    0x0000000000005d69      0x543 file.o
+ .debug_info    0x0000000000004772      0xf70 console.o
+ .debug_info    0x00000000000056e2      0x67b window.o
+ .debug_info    0x0000000000005d5d      0x543 file.o
 
 .debug_abbrev   0x0000000000000000     0x13e1
  .debug_abbrev  0x0000000000000000      0x12c bootpack.o
@@ -344,7 +344,7 @@ OUTPUT(bootpack.hrb binary)
  .debug_aranges
                 0x00000000000001d8       0x20 file.o
 
-.debug_line     0x0000000000000000     0x2425
+.debug_line     0x0000000000000000     0x2420
  .debug_line    0x0000000000000000      0x41b bootpack.o
  .debug_line    0x000000000000041b       0x2a hankaku.o
  .debug_line    0x0000000000000445       0xec fifo.o
@@ -358,9 +358,9 @@ OUTPUT(bootpack.hrb binary)
  .debug_line    0x0000000000000fbd      0x539 sheet.o
  .debug_line    0x00000000000014f6      0x167 timer.o
  .debug_line    0x000000000000165d      0x310 mtask.o
- .debug_line    0x000000000000196d      0x72f console.o
- .debug_line    0x000000000000209c      0x13f window.o
- .debug_line    0x00000000000021db      0x24a file.o
+ .debug_line    0x000000000000196d      0x72a console.o
+ .debug_line    0x0000000000002097      0x13f window.o
+ .debug_line    0x00000000000021d6      0x24a file.o
 
 .debug_str      0x0000000000000000     0x2988
  .debug_str     0x0000000000000000      0x585 bootpack.o
