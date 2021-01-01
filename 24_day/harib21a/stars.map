@@ -1,0 +1,106 @@
+
+Discarded input sections
+
+ .note.gnu.property
+                0x0000000000000000       0x1c mysprintf.o
+ .eh_frame      0x0000000000000000       0xdc mysprintf.o
+ .note.gnu.property
+                0x0000000000000000       0x1c stars.o
+ .eh_frame      0x0000000000000000       0x38 stars.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+
+.head           0x0000000000000000       0x24
+                0x0000000000000000        0x4 LONG 0x10000
+                0x0000000000000004        0x4 LONG 0x69726148
+                0x0000000000000008        0x4 LONG 0x0
+                0x000000000000000c        0x4 LONG 0x310000
+                0x0000000000000010        0x4 LONG 0xa SIZEOF (.data)
+                0x0000000000000014        0x4 LONG 0x534 LOADADDR (.data)
+                0x0000000000000018        0x4 LONG 0xe9000000
+                0x000000000000001c        0x4 LONG 0x436 (HariMain - 0x20)
+                0x0000000000000020        0x4 LONG 0x0
+
+.text           0x0000000000000030      0x504
+ *(.text)
+ .text          0x0000000000000030      0x164 a_nask.o
+                0x0000000000000030                api_putchar
+                0x000000000000003c                api_putstr0
+                0x000000000000004a                api_end
+                0x0000000000000051                api_openwin
+                0x0000000000000073                api_putstrwin
+                0x000000000000009b                api_boxfilwin
+                0x00000000000000c3                api_initmalloc
+                0x00000000000000e4                api_malloc
+                0x00000000000000f9                api_free
+                0x0000000000000112                api_point
+                0x0000000000000130                api_refreshwin
+                0x0000000000000152                api_linewin
+                0x000000000000017a                api_closewin
+                0x0000000000000188                api_getkey
+ .text          0x0000000000000194      0x2c2 mysprintf.o
+                0x0000000000000194                dec2asc
+                0x000000000000022c                hex2asc
+                0x00000000000002be                sprintf
+                0x0000000000000364                strcmp
+                0x00000000000003c9                strncmp
+                0x000000000000042b                rand
+ .text          0x0000000000000456       0xde stars.o
+                0x0000000000000456                HariMain
+
+.data           0x0000000000310000        0xa load address 0x0000000000000534
+ *(.data)
+ .data          0x0000000000310000        0x4 mysprintf.o
+ .data          0x0000000000310004        0x0 stars.o
+ *(.rodata*)
+ .rodata        0x0000000000310004        0x6 stars.o
+ *(.bss)
+ .bss           0x000000000031000a        0x0 mysprintf.o
+ .bss           0x000000000031000a        0x0 stars.o
+
+/DISCARD/
+ *(.eh_frame)
+ *(.note.gnu.property)
+LOAD a_nask.o
+LOAD mysprintf.o
+LOAD stars.o
+OUTPUT(stars.hrb binary)
+
+.debug_info     0x0000000000000000      0x2f5
+ .debug_info    0x0000000000000000      0x25f mysprintf.o
+ .debug_info    0x000000000000025f       0x96 stars.o
+
+.debug_abbrev   0x0000000000000000      0x17f
+ .debug_abbrev  0x0000000000000000      0x11f mysprintf.o
+ .debug_abbrev  0x000000000000011f       0x60 stars.o
+
+.debug_aranges  0x0000000000000000       0x40
+ .debug_aranges
+                0x0000000000000000       0x20 mysprintf.o
+ .debug_aranges
+                0x0000000000000020       0x20 stars.o
+
+.debug_line     0x0000000000000000      0x278
+ .debug_line    0x0000000000000000      0x1e6 mysprintf.o
+ .debug_line    0x00000000000001e6       0x92 stars.o
+
+.debug_str      0x0000000000000000      0x210
+ .debug_str     0x0000000000000000      0x146 mysprintf.o
+ .debug_str     0x0000000000000146       0xca stars.o
+
+.comment        0x0000000000000000       0x56
+ .comment       0x0000000000000000       0x2b mysprintf.o
+ .comment       0x000000000000002b       0x2b stars.o
+
+.note.GNU-stack
+                0x0000000000000000        0x0
+ .note.GNU-stack
+                0x0000000000000000        0x0 mysprintf.o
+ .note.GNU-stack
+                0x0000000000000000        0x0 stars.o
