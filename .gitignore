@@ -2,3 +2,5 @@
 *.lst
 *.o
 *.img
+*.hrb
+*.map
