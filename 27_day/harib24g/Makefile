@@ -1,142 +1,97 @@
-TOOLPATH = ../z_tools/
-INCPATH  = ../z_tools/haribote/
+CC = gcc
+CFLAGS = -c -m32 -nostdlib -fno-pic -fno-builtin -g
 
-MAKE     = $(TOOLPATH)make.exe -r
-EDIMG    = $(TOOLPATH)edimg.exe
-IMGTOL   = $(TOOLPATH)imgtol.com
-COPY     = copy
-DEL      = del
+#--------------------
+#	hankaku char
+#--------------------
+convHankakuTxt : convHankakuTxt.c
+	$(CC) $< -o $@
 
-# デフォルト動作
+hankaku.c : hankaku.txt convHankakuTxt
+	./convHankakuTxt
+
+#--------------------
+# os boot loader
+#--------------------
+ipl.bin : ipl.asm
+	nasm $< -o $@ -l ipl.lst
+
+asmhead.bin : asmhead.asm
+	nasm $< -o $@ -l asmhead.lst
+
+nasmfunc.o : nasmfunc.asm
+	nasm -f elf $< -o $@ -l nasmfunc.lst
+
+#--------------------
+# os system 
+#--------------------
+%.o : %.c
+	$(CC) $(CFLAGS) $*.c -o $*.o
+
+#--------------------
+# exec
+#--------------------
+a_nask.o : a_nask.asm
+	nasm -f elf $< -o $@ -l a_nask.lst
+walk.hrb: walk.o a_nask.o Makefile
+	ld -m elf_i386 -T har.ld a_nask.o walk.o -o walk.hrb -M=walk.map
+lines.hrb: lines.o a_nask.o Makefile
+	ld -m elf_i386 -T har.ld a_nask.o lines.o -o lines.hrb -M=lines.map
+stars2.hrb: stars2.o a_nask.o Makefile
+	ld -m elf_i386 -T har.ld a_nask.o mysprintf.o stars2.o -o stars2.hrb -M=stars2.map
+color.hrb: color.o a_nask.o Makefile
+	ld -m elf_i386 -T har.ld a_nask.o color.o -o color.hrb -M=color.map
+color2.hrb: color2.o a_nask.o Makefile
+	ld -m elf_i386 -T har.ld a_nask.o color2.o -o color2.hrb -M=color2.map
+
+#OBJS_BOOTPACK = bootpack.c nasmfunc.o hankaku.o mysprintf.o graphic.o dsctbl.o
+#bootpack.hrb : $(OBJS_BOOTPACK) har.ld
+#	$(CC) -m32 -march=i486 -nostdlib -nostdinc -T har.ld $(OBJS_BOOTPACK) -o $@
+OBJS_BOOTPACK = bootpack.o nasmfunc.o hankaku.o fifo.o int.o keyboard.o \
+	mouse.o memory.o mysprintf.o graphic.o dsctbl.o sheet.o timer.o \
+	mtask.o console.o window.o file.o 
+bootpack.hrb : $(OBJS_BOOTPACK) Makefile
+	ld -m elf_i386 -T har.ld $(OBJS_BOOTPACK) -o $@ -M=bootpack.map
+
+haribote.sys : asmhead.bin bootpack.hrb Makefile
+	cat asmhead.bin bootpack.hrb > haribote.sys
+
+haribote.img : ipl.bin haribote.sys walk.hrb lines.hrb stars2.hrb color.hrb color2.hrb Makefile
+	mformat -f 1440 -C -B ipl.bin -i haribote.img ::
+	mcopy haribote.sys -i haribote.img ::
+	mcopy ipl.asm -i haribote.img ::
+	mcopy make.bat -i haribote.img ::
+	mcopy walk.hrb -i haribote.img ::
+	mcopy lines.hrb -i haribote.img ::
+	mcopy stars2.hrb -i haribote.img ::
+	mcopy color.hrb -i haribote.img ::
+	mcopy color2.hrb -i haribote.img ::
+
+#--------------------
+#  debug -gdb tcp::10000
+#--------------------
 
 default :
-	$(MAKE) haribote.img
-
-# ファイル生成規則
-
-haribote.img : haribote/ipl10.bin haribote/haribote.sys Makefile \
-		a/a.hrb hello3/hello3.hrb hello4/hello4.hrb hello5/hello5.hrb \
-		winhelo/winhelo.hrb winhelo2/winhelo2.hrb winhelo3/winhelo3.hrb \
-		star1/star1.hrb stars/stars.hrb stars2/stars2.hrb \
-		lines/lines.hrb walk/walk.hrb noodle/noodle.hrb \
-		beepdown/beepdown.hrb color/color.hrb color2/color2.hrb
-	$(EDIMG)   imgin:../z_tools/fdimg0at.tek \
-		wbinimg src:haribote/ipl10.bin len:512 from:0 to:0 \
-		copy from:haribote/haribote.sys to:@: \
-		copy from:haribote/ipl10.nas to:@: \
-		copy from:make.bat to:@: \
-		copy from:a/a.hrb to:@: \
-		copy from:hello3/hello3.hrb to:@: \
-		copy from:hello4/hello4.hrb to:@: \
-		copy from:hello5/hello5.hrb to:@: \
-		copy from:winhelo/winhelo.hrb to:@: \
-		copy from:winhelo2/winhelo2.hrb to:@: \
-		copy from:winhelo3/winhelo3.hrb to:@: \
-		copy from:star1/star1.hrb to:@: \
-		copy from:stars/stars.hrb to:@: \
-		copy from:stars2/stars2.hrb to:@: \
-		copy from:lines/lines.hrb to:@: \
-		copy from:walk/walk.hrb to:@: \
-		copy from:noodle/noodle.hrb to:@: \
-		copy from:beepdown/beepdown.hrb to:@: \
-		copy from:color/color.hrb to:@: \
-		copy from:color2/color2.hrb to:@: \
-		imgout:haribote.img
-
-# コマンド
+	make run
+	
+img :
+	make haribote.img
 
 run :
-	$(MAKE) haribote.img
-	$(COPY) haribote.img ..\z_tools\qemu\fdimage0.bin
-	$(MAKE) -C ../z_tools/qemu
+	make img
+	qemu-system-i386 -fda haribote.img -monitor stdio -show-cursor
 
-install :
-	$(MAKE) haribote.img
-	$(IMGTOL) w a: haribote.img
-
-full :
-	$(MAKE) -C haribote
-	$(MAKE) -C apilib
-	$(MAKE) -C a
-	$(MAKE) -C hello3
-	$(MAKE) -C hello4
-	$(MAKE) -C hello5
-	$(MAKE) -C winhelo
-	$(MAKE) -C winhelo2
-	$(MAKE) -C winhelo3
-	$(MAKE) -C star1
-	$(MAKE) -C stars
-	$(MAKE) -C stars2
-	$(MAKE) -C lines
-	$(MAKE) -C walk
-	$(MAKE) -C noodle
-	$(MAKE) -C beepdown
-	$(MAKE) -C color
-	$(MAKE) -C color2
-	$(MAKE) haribote.img
-
-run_full :
-	$(MAKE) full
-	$(COPY) haribote.img ..\z_tools\qemu\fdimage0.bin
-	$(MAKE) -C ../z_tools/qemu
-
-install_full :
-	$(MAKE) full
-	$(IMGTOL) w a: haribote.img
-
-run_os :
-	$(MAKE) -C haribote
-	$(MAKE) run
+debug:
+	make img
+	qemu-system-i386 -S -fda haribote.img -gdb tcp::10000 -monitor stdio -show-cursor
 
 clean :
-# 何もしない
+	rm *.o
+	rm *.lst
+	rm *.bin
+	rm *.hrb
+	rm *.sys
 
 src_only :
-	$(MAKE) clean
-	-$(DEL) haribote.img
-
-clean_full :
-	$(MAKE) -C haribote		clean
-	$(MAKE) -C apilib		clean
-	$(MAKE) -C a			clean
-	$(MAKE) -C hello3		clean
-	$(MAKE) -C hello4		clean
-	$(MAKE) -C hello5		clean
-	$(MAKE) -C winhelo		clean
-	$(MAKE) -C winhelo2		clean
-	$(MAKE) -C winhelo3		clean
-	$(MAKE) -C star1		clean
-	$(MAKE) -C stars		clean
-	$(MAKE) -C stars2		clean
-	$(MAKE) -C lines		clean
-	$(MAKE) -C walk			clean
-	$(MAKE) -C noodle		clean
-	$(MAKE) -C beepdown		clean
-	$(MAKE) -C color		clean
-	$(MAKE) -C color2		clean
-
-src_only_full :
-	$(MAKE) -C haribote		src_only
-	$(MAKE) -C apilib		src_only
-	$(MAKE) -C a			src_only
-	$(MAKE) -C hello3		src_only
-	$(MAKE) -C hello4		src_only
-	$(MAKE) -C hello5		src_only
-	$(MAKE) -C winhelo		src_only
-	$(MAKE) -C winhelo2		src_only
-	$(MAKE) -C winhelo3		src_only
-	$(MAKE) -C star1		src_only
-	$(MAKE) -C stars		src_only
-	$(MAKE) -C stars2		src_only
-	$(MAKE) -C lines		src_only
-	$(MAKE) -C walk			src_only
-	$(MAKE) -C noodle		src_only
-	$(MAKE) -C beepdown		src_only
-	$(MAKE) -C color		src_only
-	$(MAKE) -C color2		src_only
-	-$(DEL) haribote.img
-
-refresh :
-	$(MAKE) full
-	$(MAKE) clean_full
-	-$(DEL) haribote.img
+	rm haribote.img
+	make clean
